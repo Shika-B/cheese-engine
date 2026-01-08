@@ -6,14 +6,19 @@ use std::{collections::HashMap};
 // For debugging purpose. Returns the first available legal move.
 pub struct DoNothingEngine;
 
-impl Engine for DoNothingEngine {
+
+impl<T: EvaluateEngine> SearchEngine<T> for DoNothingEngine {
     fn next_move(&mut self, board: &Board, _state: &GameState, _time_info: Option<TimeInfo>) -> Option<ChessMove> {
         MoveGen::new_legal(board).next()
     }
 }
 
 
-pub trait Engine {
+pub trait EvaluateEngine {
+    fn evaluate(&self, board: &Board) -> i16;
+}
+
+pub trait SearchEngine<T: EvaluateEngine> {
     /// Finds the next move to be played given a GameState and  optional time-control information.
     /// Returns an Option because it can technically fail to find a reasonable move.
     /// Default implementation returns the first available legal move

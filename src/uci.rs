@@ -1,11 +1,9 @@
 use crate::engine::{Engine, GameState};
 
-
-use vampirc_uci::{UciMessage, UciMove, UciPiece, UciSquare, parse_one};
 use chess::{Board, ChessMove, Piece, Square};
+use vampirc_uci::{UciMessage, UciMove, UciPiece, UciSquare, parse_one};
 
 use std::io::{self, BufRead};
-
 
 pub fn uci_loop<T: Engine>(engine: &mut T) -> () {
     let stdin = io::stdin();
@@ -35,6 +33,7 @@ pub fn uci_loop<T: Engine>(engine: &mut T) -> () {
             } => {
                 if !startpos {
                     // TODO: Implement FEN string parsing.
+                    log::error!("Does not handle FEN string parsing yet");
                     unimplemented!("Does not handle FEN string parsing yet")
                 }
                 game_state = GameState::default();
@@ -62,7 +61,10 @@ pub fn uci_loop<T: Engine>(engine: &mut T) -> () {
                         log::debug!("{}", best_move);
                         println!("{}", best_move);
                     }
-                    None => println!("bestmove 0000"), // Resigns
+                    None => {
+                        log::info!("Resigning");
+                        println!("bestmove 0000") // Resigns
+                    } 
                 }
             }
             UciMessage::Unknown(message, _) => {
@@ -70,13 +72,13 @@ pub fn uci_loop<T: Engine>(engine: &mut T) -> () {
             }
             m => {
                 log::error!("Unimplemented {:#?}", m);
-                // panic!("Unimplemented {:#?}", m);
             }
         }
     }
 }
 
 
+// Two conversion functions
 
 fn from_uci_move(mv: UciMove) -> ChessMove {
     fn parse_uci_square(sq: UciSquare) -> Square {
