@@ -58,7 +58,7 @@
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 17972993443201536214,
+    "seed": 3058697106119828985,
     "variant": 0,
     "type": 0,
     "gauntlet_seeds": 1,
@@ -87,7 +87,7 @@
         {
             "name": "NewEngine",
             "dir": "",
-            "cmd": "executables/v2-alpha-beta-pruning",
+            "cmd": "executables/v3_transpo_table",
             "args": "",
             "restart": false,
             "options": [],
@@ -107,7 +107,7 @@
         {
             "name": "OldEngine",
             "dir": "",
-            "cmd": "executables/v1-depth1",
+            "cmd": "executables/v2-alpha-beta-pruning",
             "args": "",
             "restart": false,
             "options": [],
@@ -125,28 +125,5 @@
             "variant": 0
         }
     ],
-    "stats": {
-        "OldEngine vs NewEngine": {
-            "wins": 5,
-            "losses": 7,
-            "draws": 0,
-            "penta_WW": 1,
-            "penta_WD": 0,
-            "penta_WL": 3,
-            "penta_DD": 0,
-            "penta_LD": 0,
-            "penta_LL": 2
-        },
-        "NewEngine vs OldEngine": {
-            "wins": 6,
-            "losses": 8,
-            "draws": 0,
-            "penta_WW": 1,
-            "penta_WD": 0,
-            "penta_WL": 4,
-            "penta_DD": 0,
-            "penta_LD": 0,
-            "penta_LL": 2
-        }
-    }
+    "stats": null
 }

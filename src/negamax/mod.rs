@@ -7,8 +7,8 @@ use chess::{BoardStatus, ChessMove, MoveGen};
 
 use crate::engine::{EvaluateEngine, GameState, SearchEngine, TimeInfo};
 
-const TRANSPOTION_TABLE_SIZE: usize = 1_048_576; // 1 048 576 = 2**20
-const MAGIC_TRANSPO: usize = 44; //64 - 20
+const TRANSPOTION_TABLE_SIZE: usize = 65_536; // 65_536 = 2**16
+const MAGIC_TRANSPO: usize = 48; //64 - 16
 
 const MATE_THRESHOLD: i16 = 29_000;
 
