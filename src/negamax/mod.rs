@@ -3,12 +3,11 @@ use std::{
     time::{Duration, Instant},
 };
 
-use chess::{BoardStatus, ChessMove, MoveGen};
+use chess::{BoardStatus, ChessMove, EMPTY, MoveGen};
 
 use crate::engine::{EvaluateEngine, GameState, SearchEngine, TimeInfo};
 
 const TRANSPOTION_TABLE_SIZE: usize = 65_536; // 65_536 = 2**16
-const MAGIC_TRANSPO: usize = 48; //64 - 16
 
 const MATE_THRESHOLD: i16 = 29_000;
 
@@ -52,18 +51,33 @@ impl<E: EvaluateEngine> SearchEngine<E> for Negamax {
         let mut best_score = i16::MIN;
         let mut best_move = None;
 
-        let legal_moves = MoveGen::new_legal(&board);
+        let mut legal_moves = MoveGen::new_legal(&board);
 
-        for mv in legal_moves {
+        let targets = board.color_combined(!board.side_to_move());
+
+        legal_moves.set_iterator_mask(*targets);
+        for mv in &mut legal_moves {
             state.make_move(mv);
-            let score = self.search_eval::<E>(&mut state, time_info, -i16::MAX, i16::MAX, 3);
+            let score = -self.search_eval::<E>(&mut state, time_info, -i16::MAX, i16::MAX, 3);
             if score > best_score {
                 best_score = score;
                 best_move = Some(mv);
             }
             state.undo_last_move();
         }
-        let elapsed = (Instant::now() - start);
+
+        legal_moves.set_iterator_mask(!EMPTY);
+        for mv in &mut legal_moves {
+            state.make_move(mv);
+            let score = -self.search_eval::<E>(&mut state, time_info, -i16::MAX, i16::MAX, 3);
+            if score > best_score {
+                best_score = score;
+                best_move = Some(mv);
+            }
+            state.undo_last_move();
+        }
+
+        let elapsed = Instant::now() - start;
         log::info!(
             "Nodes explored: {} in {}ms. {:.0} NPS",
             self.nodes_explored,
@@ -93,7 +107,8 @@ impl Negamax {
         self.nodes_explored += 1;
         let board = state.last_board();
         let board_hash = board.get_hash();
-        let transpo_idx = (board_hash >> MAGIC_TRANSPO) as usize;
+        let transpo_idx = (board_hash as usize) & (TRANSPOTION_TABLE_SIZE - 1);
+
 
         if let Some(entry) = self.transposition_table[transpo_idx] {
             if entry.hash == board_hash && entry.depth >= depth {
