@@ -25,7 +25,7 @@ impl<E: EvaluateEngine> SearchEngine<E> for Negamax {
 
         for mv in legal_moves {
             state.make_move(mv);
-            let score = self.search_eval::<E>(&mut state, time_info, 2);
+            let score = self.search_eval::<E>(&mut state, time_info, 1);
             if score > best_score {
                 best_score = score;
                 best_move = Some(mv);
