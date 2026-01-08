@@ -1,13 +1,13 @@
 mod engine;
-mod uci;
+mod evaluation;
 mod mcts;
 mod negamax;
-mod evaluation;
+mod uci;
 
 use fern;
 use log;
 
-use crate::engine::{AnyMove};
+use crate::engine::AnyMove;
 use crate::evaluation::CountMaterial;
 use crate::uci::uci_loop;
 
@@ -23,11 +23,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         })
         .level(log::LevelFilter::Debug)
         .chain(std::io::stderr()) // log to console in STDERR
-        .chain(fern::log_file("/home/abdel/Documents/cheese-engine/logfile.txt")?) // log to file, useful when the engine is called by another program and I can't read STDERR directly. 
+        .chain(fern::log_file(
+            "/home/abdel/Documents/cheese-engine/logfile.txt",
+        )?) // log to file, useful when the engine is called by another program and I can't read STDERR directly.
         .apply()?;
 
     log::info!("Starting UCI loop");
-    let mut engine = AnyMove; 
+    let mut engine = AnyMove;
     uci_loop::<CountMaterial, _>(&mut engine);
     Ok(())
 }

@@ -1,4 +1,4 @@
-use crate::engine::{SearchEngine, EvaluateEngine, GameState};
+use crate::engine::{EvaluateEngine, GameState, SearchEngine};
 
 use chess::{Board, ChessMove, Piece, Square};
 use vampirc_uci::{UciMessage, UciMove, UciPiece, UciSquare, parse_one};
@@ -9,7 +9,6 @@ pub fn uci_loop<E: EvaluateEngine, S: SearchEngine<E>>(engine: &mut S) -> () {
     let stdin = io::stdin();
 
     let mut game_state = GameState::default();
-    let mut board = Board::default();
 
     for line in stdin.lock().lines() {
         let line = line.expect("Failed to read line");
@@ -37,11 +36,10 @@ pub fn uci_loop<E: EvaluateEngine, S: SearchEngine<E>>(engine: &mut S) -> () {
                     unimplemented!("Does not handle FEN string parsing yet")
                 }
                 game_state = GameState::default();
-                board = Board::default();
 
                 for mv in moves {
                     let chess_mv = from_uci_move(mv);
-                    board = game_state.update_from_move(board, chess_mv);
+                    game_state.make_move(chess_mv);
                 }
             }
             UciMessage::Go {
@@ -49,7 +47,7 @@ pub fn uci_loop<E: EvaluateEngine, S: SearchEngine<E>>(engine: &mut S) -> () {
                 search_control: _,
             } => {
                 // TODO: Implement time control (and search control ?) parsing
-                let best_move = engine.next_move(&board, &game_state, None);
+                let best_move = engine.next_move(game_state.clone(), &None);
                 log::debug!("Found move {:#?}", best_move);
                 match best_move {
                     Some(mv) => {
@@ -64,7 +62,7 @@ pub fn uci_loop<E: EvaluateEngine, S: SearchEngine<E>>(engine: &mut S) -> () {
                     None => {
                         log::info!("Resigning");
                         println!("bestmove 0000") // Resigns
-                    } 
+                    }
                 }
             }
             UciMessage::Unknown(message, _) => {
@@ -76,7 +74,6 @@ pub fn uci_loop<E: EvaluateEngine, S: SearchEngine<E>>(engine: &mut S) -> () {
         }
     }
 }
-
 
 // Two conversion functions
 
