@@ -63,7 +63,8 @@ impl GameState {
         }
         self.num_moves += 1;
         let board = board.make_move_new(mv);
-
+        self.boards.push(board);
+        
         let count = self.seen_positions.entry(board.get_hash()).or_insert(0);
         *count += 1;
 

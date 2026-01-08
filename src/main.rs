@@ -7,8 +7,8 @@ mod uci;
 use fern;
 use log;
 
-use crate::engine::AnyMove;
 use crate::evaluation::CountMaterial;
+use crate::negamax::Negamax;
 use crate::uci::uci_loop;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -29,7 +29,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .apply()?;
 
     log::info!("Starting UCI loop");
-    let mut engine = AnyMove;
+    let mut engine = Negamax {};
     uci_loop::<CountMaterial, _>(&mut engine);
     Ok(())
 }
