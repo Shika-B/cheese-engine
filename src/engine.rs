@@ -7,11 +7,7 @@ use std::collections::HashMap;
 pub struct AnyMove;
 
 impl<T: EvaluateEngine> SearchEngine<T> for AnyMove {
-    fn next_move(
-        &mut self,
-        state: GameState,
-        _time_info: &Option<TimeInfo>,
-    ) -> Option<ChessMove> {
+    fn next_move(&mut self, state: GameState, _time_info: &Option<TimeInfo>) -> Option<ChessMove> {
         MoveGen::new_legal(&state.last_board()).next()
     }
 }
@@ -25,11 +21,7 @@ pub trait SearchEngine<T: EvaluateEngine> {
     /// Finds the next move to be played given a GameState and  optional time-control information.
     /// Returns an Option because it can technically fail to find a reasonable move.
     /// Default implementation returns the first available legal move
-    fn next_move(
-        &mut self,
-        state: GameState,
-        time_info: &Option<TimeInfo>,
-    ) -> Option<ChessMove>;
+    fn next_move(&mut self, state: GameState, time_info: &Option<TimeInfo>) -> Option<ChessMove>;
 
     /// Used to keep searching moves on opponents time.
     /// Default implementation does nothing, and it may be left as is.
@@ -74,12 +66,11 @@ impl GameState {
     pub fn undo_last_move(&mut self) {
         let last_board = self.boards.pop().unwrap();
         *self.seen_positions.get_mut(&last_board.get_hash()).unwrap() -= 1;
-
     }
 
-
     pub fn is_draw(&self) -> bool {
-        return (self.last_board().status() == BoardStatus::Stalemate || self.moves_since_capture >= 50
+        return (self.last_board().status() == BoardStatus::Stalemate
+            || self.moves_since_capture >= 50
             || self
                 .seen_positions
                 .iter()

@@ -21,9 +21,9 @@ impl EvaluateEngine for CountMaterial {
 
         let board = state.last_board();
         let status = board.status();
-        
+
         if status == BoardStatus::Checkmate {
-            return -MATE_VALUE + state.num_moves as i16
+            return -MATE_VALUE + state.num_moves as i16;
         }
 
         let mut score = 0;

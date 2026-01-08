@@ -1,6 +1,6 @@
 use crate::engine::{EvaluateEngine, GameState, SearchEngine, TimeInfo};
 
-use chess::{Board, ChessMove, Piece, Square};
+use chess::{ChessMove, Piece, Square};
 use vampirc_uci::{UciMessage, UciMove, UciPiece, UciSquare, UciTimeControl, parse_one};
 
 use std::io::{self, BufRead};
@@ -77,7 +77,7 @@ pub fn uci_loop<E: EvaluateEngine, S: SearchEngine<E>>(engine: &mut S) -> () {
                 } else {
                     None
                 };
-                
+
                 let best_move = engine.next_move(game_state.clone(), &time_control);
                 log::debug!("Found move {:#?}", best_move);
                 match best_move {

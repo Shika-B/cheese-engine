@@ -11,6 +11,8 @@ const TRANSPOTION_TABLE_SIZE: usize = 65_536; // 65_536 = 2**16
 
 const MATE_THRESHOLD: i16 = 29_000;
 
+const MAX_DEPTH: u16 = 3;
+
 #[derive(Debug, Copy, Clone)]
 pub enum ResultKind {
     Exact,
@@ -48,33 +50,47 @@ impl<E: EvaluateEngine> SearchEngine<E> for Negamax {
         let start = Instant::now();
 
         let board = state.last_board();
-        let mut best_score = i16::MIN;
+
         let mut best_move = None;
 
-        let mut legal_moves = MoveGen::new_legal(&board);
-
         let targets = board.color_combined(!board.side_to_move());
+        for curr_depth in 0..=MAX_DEPTH {
+            let mut alpha = -i16::MAX;
+            let beta = i16::MAX;
+            let mut legal_moves = MoveGen::new_legal(&board);
 
-        legal_moves.set_iterator_mask(*targets);
-        for mv in &mut legal_moves {
-            state.make_move(mv);
-            let score = -self.search_eval::<E>(&mut state, time_info, -i16::MAX, i16::MAX, 3);
-            if score > best_score {
-                best_score = score;
-                best_move = Some(mv);
+            if let Some(mv) = best_move {
+                legal_moves.remove_move(mv);
+                state.make_move(mv);
+                let score = -self.search_eval::<E>(&mut state, -beta, -alpha, curr_depth);
+                if score > alpha {
+                    alpha = score;
+                    best_move = Some(mv);
+                }
+                state.undo_last_move();
             }
-            state.undo_last_move();
-        }
 
-        legal_moves.set_iterator_mask(!EMPTY);
-        for mv in &mut legal_moves {
-            state.make_move(mv);
-            let score = -self.search_eval::<E>(&mut state, time_info, -i16::MAX, i16::MAX, 3);
-            if score > best_score {
-                best_score = score;
-                best_move = Some(mv);
+            legal_moves.set_iterator_mask(*targets);
+            for mv in &mut legal_moves {
+                state.make_move(mv);
+                let score = -self.search_eval::<E>(&mut state, -beta, -alpha, curr_depth);
+                if score > alpha {
+                    alpha = score;
+                    best_move = Some(mv);
+                }
+                state.undo_last_move();
             }
-            state.undo_last_move();
+
+            legal_moves.set_iterator_mask(!EMPTY);
+            for mv in &mut legal_moves {
+                state.make_move(mv);
+                let score = -self.search_eval::<E>(&mut state, -beta, -alpha, curr_depth);
+                if score > alpha {
+                    alpha = score;
+                    best_move = Some(mv);
+                }
+                state.undo_last_move();
+            }
         }
 
         let elapsed = Instant::now() - start;
@@ -99,7 +115,6 @@ impl Negamax {
     pub fn search_eval<E: EvaluateEngine>(
         &mut self,
         state: &mut GameState,
-        _time_info: &Option<TimeInfo>,
         mut alpha: i16,
         beta: i16,
         depth: u16,
@@ -108,7 +123,6 @@ impl Negamax {
         let board = state.last_board();
         let board_hash = board.get_hash();
         let transpo_idx = (board_hash as usize) & (TRANSPOTION_TABLE_SIZE - 1);
-
 
         if let Some(entry) = self.transposition_table[transpo_idx] {
             if entry.hash == board_hash && entry.depth >= depth {
@@ -140,7 +154,7 @@ impl Negamax {
         for mv in MoveGen::new_legal(&board) {
             state.make_move(mv);
 
-            let score: i16 = -self.search_eval::<E>(state, _time_info, -beta, -alpha, depth - 1);
+            let score: i16 = -self.search_eval::<E>(state, -beta, -alpha, depth - 1);
 
             state.undo_last_move();
 
