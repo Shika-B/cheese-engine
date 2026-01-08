@@ -1,7 +1,6 @@
 use std::time::{Duration, Instant};
 
 use chess::{BoardStatus, ChessMove, MoveGen};
-use log::log;
 
 use crate::engine::{EvaluateEngine, GameState, SearchEngine, TimeInfo};
 
@@ -31,17 +30,14 @@ impl<E: EvaluateEngine> SearchEngine<E> for Negamax {
                 best_score = score;
                 best_move = Some(mv);
             }
-            log::info!(
-                "Nodes explored: {} in {}ms",
-                self.nodes_explored,
-                (Instant::now() - start).as_millis()
-            );
             state.undo_last_move();
         }
+        let elapsed = (Instant::now() - start);
         log::info!(
-            "Nodes explored: {} in {}ms",
+            "Nodes explored: {} in {}ms. {:.0} NPS",
             self.nodes_explored,
-            (Instant::now() - start).as_millis()
+            elapsed.as_millis(),
+            (self.nodes_explored as f64 / elapsed.as_secs_f64()).round()
         );
         best_move
     }
@@ -74,8 +70,9 @@ impl Negamax {
                 .max()
                 .unwrap(),
             BoardStatus::Stalemate => return 0,
-            BoardStatus::Checkmate => return i16::MIN
-            
+            BoardStatus::Checkmate => {
+                return -crate::evaluation::MATE_VALUE + state.num_moves as i16;
+            }
         }
     }
 }

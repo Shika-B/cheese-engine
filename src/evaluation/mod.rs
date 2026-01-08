@@ -1,23 +1,31 @@
-use chess::{Board, Color, Piece};
+use chess::{Board, BoardStatus, Color, Piece};
 
 use crate::engine::{EvaluateEngine, GameState};
 
 // Simplest position evaluation possible
-const PAWN_VALUE: i16 = 100;
-const KNIGHT_VALUE: i16 = 320;
-const BISHOP_VALUE: i16 = 330;
-const ROOK_VALUE: i16 = 500;
-const QUEEN_VALUE: i16 = 900;
+pub const PAWN_VALUE: i16 = 100;
+pub const KNIGHT_VALUE: i16 = 320;
+pub const BISHOP_VALUE: i16 = 330;
+pub const ROOK_VALUE: i16 = 500;
+pub const QUEEN_VALUE: i16 = 900;
+
+pub const MATE_VALUE: i16 = 30_000;
 
 pub struct CountMaterial;
 
 impl EvaluateEngine for CountMaterial {
     fn evaluate(state: &GameState) -> i16 {
-        if state.can_draw() {
+        if state.is_draw() {
             return 0;
         }
 
         let board = state.last_board();
+        let status = board.status();
+        
+        if status == BoardStatus::Checkmate {
+            return -MATE_VALUE + state.num_moves as i16
+        }
+
         let mut score = 0;
 
         let white = board.color_combined(Color::White);
