@@ -3,7 +3,6 @@ mod uci;
 mod mcts;
 mod negamax;
 mod evaluation;
-use std::any::Any;
 
 use fern;
 use log;

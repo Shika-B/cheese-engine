@@ -2,6 +2,11 @@ use chess::{Board, Color, Piece};
 
 use crate::engine::EvaluateEngine;
 
+
+
+
+
+// Simplest position evaluation possible
 const PAWN_VALUE: i16 = 100;
 const KNIGHT_VALUE: i16 = 320;
 const BISHOP_VALUE: i16 = 330;
@@ -12,10 +17,10 @@ const QUEEN_VALUE: i16 = 900;
 pub struct CountMaterial;
 
 impl EvaluateEngine for CountMaterial {
-    fn evaluate(&self, board: &Board, is_white: bool) -> i16 {
+    fn evaluate(board: &Board, is_white: bool) -> i16 {
         let mut score = 0;
 
-        // Helper closure to count pieces
+        // Lambda function to avoid repetive code
         let count = |piece, color| {
             (board
                 .pieces(piece)

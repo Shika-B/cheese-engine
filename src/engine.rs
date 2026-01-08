@@ -7,7 +7,6 @@ use std::{collections::HashMap};
 // For debugging purpose. Returns the first available legal move.
 pub struct AnyMove;
 
-
 impl<T: EvaluateEngine> SearchEngine<T> for AnyMove {
     fn next_move(&mut self, board: &Board, _state: &GameState, _time_info: Option<TimeInfo>) -> Option<ChessMove> {
         MoveGen::new_legal(board).next()
@@ -16,7 +15,8 @@ impl<T: EvaluateEngine> SearchEngine<T> for AnyMove {
 
 
 pub trait EvaluateEngine {
-    fn evaluate(&self, board: &Board, is_white: bool) -> i16;
+    /// Returns a quantized (integer-valued) evaluation of the position, from a given perspective.
+    fn evaluate(board: &Board, is_white: bool) -> i16;
 }
 
 pub trait SearchEngine<T: EvaluateEngine> {
