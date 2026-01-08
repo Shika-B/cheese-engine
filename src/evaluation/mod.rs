@@ -20,18 +20,20 @@ impl EvaluateEngine for CountMaterial {
         let board = state.last_board();
         let mut score = 0;
 
-        // Lambda function to avoid repetive code
-        let count =
-            |piece, color| (board.pieces(piece) & board.color_combined(color)).popcnt() as i16;
+        let white = board.color_combined(Color::White);
+        let black = board.color_combined(Color::Black);
 
-        score += PAWN_VALUE * (count(Piece::Pawn, Color::White) - count(Piece::Pawn, Color::Black));
-        score += KNIGHT_VALUE
-            * (count(Piece::Knight, Color::White) - count(Piece::Knight, Color::Black));
-        score += BISHOP_VALUE
-            * (count(Piece::Bishop, Color::White) - count(Piece::Bishop, Color::Black));
-        score += ROOK_VALUE * (count(Piece::Rook, Color::White) - count(Piece::Rook, Color::Black));
-        score +=
-            QUEEN_VALUE * (count(Piece::Queen, Color::White) - count(Piece::Queen, Color::Black));
+        // Lambda function to avoid repetive code
+        let count = |piece| {
+            let pieces = board.pieces(piece);
+            ((pieces & white).popcnt() - (pieces & black).popcnt()) as i16
+        };
+
+        score += PAWN_VALUE * count(Piece::Pawn);
+        score += KNIGHT_VALUE * count(Piece::Knight);
+        score += BISHOP_VALUE * count(Piece::Bishop);
+        score += ROOK_VALUE * count(Piece::Rook);
+        score += QUEEN_VALUE * count(Piece::Queen);
 
         if board.side_to_move() == Color::White {
             score

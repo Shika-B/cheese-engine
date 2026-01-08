@@ -29,7 +29,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .apply()?;
 
     log::info!("Starting UCI loop");
-    let mut engine = Negamax {};
+    let mut engine = Negamax::new();
     uci_loop::<CountMaterial, _>(&mut engine);
     Ok(())
 }
