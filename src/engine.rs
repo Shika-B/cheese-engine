@@ -102,10 +102,10 @@ impl Default for GameState {
 
 #[derive(Debug, Clone)]
 pub struct TimeInfo {
-    move_time: Option<Duration>,
-    white_time: Option<Duration>,
-    black_time: Option<Duration>,
-    white_increment: Option<Duration>,
-    black_increment: Option<Duration>,
-    moves_to_go: Option<u8>,
+    pub move_time: Option<Duration>,
+    pub white_time: Option<Duration>,
+    pub black_time: Option<Duration>,
+    pub white_increment: Option<Duration>,
+    pub black_increment: Option<Duration>,
+    pub moves_to_go: Option<u8>,
 }

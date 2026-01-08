@@ -1,7 +1,7 @@
-use crate::engine::{EvaluateEngine, GameState, SearchEngine};
+use crate::engine::{EvaluateEngine, GameState, SearchEngine, TimeInfo};
 
 use chess::{Board, ChessMove, Piece, Square};
-use vampirc_uci::{UciMessage, UciMove, UciPiece, UciSquare, parse_one};
+use vampirc_uci::{UciMessage, UciMove, UciPiece, UciSquare, UciTimeControl, parse_one};
 
 use std::io::{self, BufRead};
 
@@ -43,11 +43,42 @@ pub fn uci_loop<E: EvaluateEngine, S: SearchEngine<E>>(engine: &mut S) -> () {
                 }
             }
             UciMessage::Go {
-                time_control: _,
+                time_control,
                 search_control: _,
             } => {
-                // TODO: Implement time control (and search control ?) parsing
-                let best_move = engine.next_move(game_state.clone(), &None);
+                // TODO: Implement search control parsing ?
+                let time_control = if let Some(tc) = time_control {
+                    match tc {
+                        UciTimeControl::Infinite => None,
+                        UciTimeControl::TimeLeft {
+                            white_time,
+                            black_time,
+                            white_increment,
+                            black_increment,
+                            moves_to_go,
+                        } => Some(TimeInfo {
+                            white_time,
+                            black_time,
+                            white_increment,
+                            black_increment,
+                            moves_to_go,
+                            move_time: None,
+                        }),
+                        UciTimeControl::MoveTime(move_time) => Some(TimeInfo {
+                            move_time: Some(move_time),
+                            white_time: None,
+                            black_time: None,
+                            white_increment: None,
+                            black_increment: None,
+                            moves_to_go: None,
+                        }),
+                        UciTimeControl::Ponder => None,
+                    }
+                } else {
+                    None
+                };
+                
+                let best_move = engine.next_move(game_state.clone(), &time_control);
                 log::debug!("Found move {:#?}", best_move);
                 match best_move {
                     Some(mv) => {

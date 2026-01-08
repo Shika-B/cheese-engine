@@ -27,7 +27,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             "/home/abdel/Documents/cheese-engine/logfile.txt",
         )?) // log to file, useful when the engine is called by another program and I can't read STDERR directly.
         .apply()?;
-
+    
     log::info!("Starting UCI loop");
     let mut engine = Negamax::new();
     uci_loop::<CountMaterial, _>(&mut engine);
