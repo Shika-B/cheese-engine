@@ -20,4 +20,4 @@ fastchess \
     -concurrency 8 \
     -recover \
     -sprt elo0=0 elo1=5 alpha=0.05 beta=0.1
-
+w

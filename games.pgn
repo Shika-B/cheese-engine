@@ -886,3 +886,620 @@ b2 {ERR/0 0.000s} 61. Kg3 {ERR/0 0.000s} Ne2+ {ERR/0 0.000s}
 Ne2+ {ERR/0 0.000s} 64. Kf2 {ERR/0 0.000s}
 Ng1 {ERR/0 0.000s, Draw by 3-fold repetition} 1/2-1/2
 
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "1"]
+[White "OldEngine"]
+[Black "NewEngine"]
+[Result "0-1"]
+[GameDuration "00:00:10"]
+[GameStartTime "2026-01-08T16:13:19 +0100"]
+[GameEndTime "2026-01-08T16:13:30 +0100"]
+[PlyCount "19"]
+[Termination "time forfeit"]
+[TimeControl "10+0.1"]
+[ECO "B12"]
+[Opening "Caro-Kann Defense: Advance Variation, Tal Variation"]
+
+1. e4 {book} c6 {book} 2. d4 {book} d5 {book} 3. e5 {book} Bf5 {book}
+4. h4 {book} Qb6 {book} 5. Nc3 {book} h5 {book} 6. Be2 {book} e6 {book}
+7. Nf3 {book} Nd7 {book} 8. O-O {book} Ne7 {book} 9. Nxd5 {ERR/0 0.003s}
+c5 {ERR/0 0.003s} 10. Nxb6 {ERR/0 10.310s, White loses on time} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "1"]
+[White "NewEngine"]
+[Black "OldEngine"]
+[Result "0-1"]
+[GameDuration "00:00:00"]
+[GameStartTime "2026-01-08T16:13:19 +0100"]
+[GameEndTime "2026-01-08T16:14:20 +0100"]
+[PlyCount "16"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "B12"]
+[Opening "Caro-Kann Defense: Advance Variation, Tal Variation"]
+
+1. e4 {book} c6 {book} 2. d4 {book} d5 {book} 3. e5 {book} Bf5 {book}
+4. h4 {book} Qb6 {book} 5. Nc3 {book} h5 {book} 6. Be2 {book} e6 {book}
+7. Nf3 {book} Nd7 {book} 8. O-O {book} Ne7 {book} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "4"]
+[White "OldEngine"]
+[Black "NewEngine"]
+[Result "1-0"]
+[GameDuration "00:00:00"]
+[GameStartTime "2026-01-08T16:13:19 +0100"]
+[GameEndTime "2026-01-08T16:14:20 +0100"]
+[PlyCount "16"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "A21"]
+[Opening "English Opening: King's English Variation"]
+
+1. c4 {book} e5 {book} 2. Nc3 {book} d6 {book} 3. Nf3 {book} f5 {book}
+4. d4 {book} e4 {book} 5. Ng5 {book} Nf6 {book} 6. f3 {book} exf3 {book}
+7. Nxf3 {book} c6 {book} 8. e3 {book} g6 {book} 1-0
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "3"]
+[White "OldEngine"]
+[Black "NewEngine"]
+[Result "0-1"]
+[GameDuration "00:01:00"]
+[GameStartTime "2026-01-08T16:13:19 +0100"]
+[GameEndTime "2026-01-08T16:14:20 +0100"]
+[PlyCount "16"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "D05"]
+[Opening "Queen's Pawn Game: Colle System, Traditional Colle"]
+
+1. d4 {book} d5 {book} 2. Nf3 {book} Nf6 {book} 3. e3 {book} e6 {book}
+4. Bd3 {book} c5 {book} 5. c3 {book} Nc6 {book} 6. Nbd2 {book} Qc7 {book}
+7. O-O {book} Be7 {book} 8. Qe2 {book} O-O {book} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "4"]
+[White "NewEngine"]
+[Black "OldEngine"]
+[Result "0-1"]
+[GameDuration "00:01:00"]
+[GameStartTime "2026-01-08T16:13:19 +0100"]
+[GameEndTime "2026-01-08T16:14:20 +0100"]
+[PlyCount "16"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "A21"]
+[Opening "English Opening: King's English Variation"]
+
+1. c4 {book} e5 {book} 2. Nc3 {book} d6 {book} 3. Nf3 {book} f5 {book}
+4. d4 {book} e4 {book} 5. Ng5 {book} Nf6 {book} 6. f3 {book} exf3 {book}
+7. Nxf3 {book} c6 {book} 8. e3 {book} g6 {book} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "2"]
+[White "OldEngine"]
+[Black "NewEngine"]
+[Result "0-1"]
+[GameDuration "00:01:00"]
+[GameStartTime "2026-01-08T16:13:19 +0100"]
+[GameEndTime "2026-01-08T16:14:20 +0100"]
+[PlyCount "16"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "A05"]
+[Opening "King's Indian Attack: Symmetrical Defense"]
+
+1. Nf3 {book} Nf6 {book} 2. g3 {book} g6 {book} 3. b3 {book} Bg7 {book}
+4. Bb2 {book} O-O {book} 5. Bg2 {book} c5 {book} 6. c4 {book} Nc6 {book}
+7. O-O {book} d6 {book} 8. Nc3 {book} Bf5 {book} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "3"]
+[White "NewEngine"]
+[Black "OldEngine"]
+[Result "0-1"]
+[GameDuration "00:01:00"]
+[GameStartTime "2026-01-08T16:13:19 +0100"]
+[GameEndTime "2026-01-08T16:14:20 +0100"]
+[PlyCount "18"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "D05"]
+[Opening "Queen's Pawn Game: Colle System, Traditional Colle"]
+
+1. d4 {book} d5 {book} 2. Nf3 {book} Nf6 {book} 3. e3 {book} e6 {book}
+4. Bd3 {book} c5 {book} 5. c3 {book} Nc6 {book} 6. Nbd2 {book} Qc7 {book}
+7. O-O {book} Be7 {book} 8. Qe2 {book} O-O {book} 9. Bc4 {ERR/0 0.001s}
+dxc4 {ERR/0 0.000s, White's connection stalls} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "2"]
+[White "NewEngine"]
+[Black "OldEngine"]
+[Result "1-0"]
+[GameDuration "00:01:00"]
+[GameStartTime "2026-01-08T16:13:19 +0100"]
+[GameEndTime "2026-01-08T16:14:20 +0100"]
+[PlyCount "49"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "A05"]
+[Opening "King's Indian Attack: Symmetrical Defense"]
+
+1. Nf3 {book} Nf6 {book} 2. g3 {book} g6 {book} 3. b3 {book} Bg7 {book}
+4. Bb2 {book} O-O {book} 5. Bg2 {book} c5 {book} 6. c4 {book} Nc6 {book}
+7. O-O {book} d6 {book} 8. Nc3 {book} Bf5 {book} 9. Qb1 {ERR/0 0.004s}
+Bxb1 {ERR/0 0.003s} 10. Ne4 {ERR/0 0.002s} Nxe4 {ERR/0 0.005s}
+11. Bc1 {ERR/0 0.002s} Bxa1 {ERR/0 0.001s} 12. Bb2 {ERR/0 0.001s}
+Bxb2 {ERR/0 0.000s} 13. Rc1 {ERR/0 0.000s} Bxc1 {ERR/0 0.002s}
+14. Nd4 {ERR/0 0.001s} cxd4 {ERR/0 0.001s} 15. a3 {ERR/0 0.001s}
+Nxd2 {ERR/0 0.001s} 16. Bf1 {ERR/0 0.000s} Nxf1 {ERR/0 0.000s}
+17. e3 {ERR/0 0.000s} dxe3 {ERR/0 0.000s} 18. f3 {ERR/0 0.000s}
+Nxh2 {ERR/0 0.000s} 19. a4 {ERR/0 0.000s} Nxf3+ {ERR/0 0.000s}
+20. Kf1 {ERR/0 0.000s} e2+ {0.00/0 0.000s} 21. Kf2 {0.00/0 0.000s}
+e1=Q+ {ERR/0 0.000s} 22. Kg2 {ERR/0 0.000s} Qxg3+ {ERR/0 0.000s}
+23. Kf1 {ERR/0 0.001s} d5 {ERR/0 0.000s} 24. b4 {0.00/0 0.000s}
+dxc4 {0.00/0 0.000s} 25. a5 {ERR/0 0.001s, Black's connection stalls} 1-0
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "5"]
+[White "NewEngine"]
+[Black "OldEngine"]
+[Result "0-1"]
+[GameDuration "00:01:00"]
+[GameStartTime "2026-01-08T16:13:30 +0100"]
+[GameEndTime "2026-01-08T16:14:30 +0100"]
+[PlyCount "20"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "E81"]
+[Opening "King's Indian Defense: Sämisch Variation, Bobotsov-Korchnoi-Petrosian Variation"]
+
+1. d4 {book} Nf6 {book} 2. c4 {book} g6 {book} 3. f3 {book} Bg7 {book}
+4. e4 {book} d6 {book} 5. Ne2 {book} O-O {book} 6. Nbc3 {book} Nbd7 {book}
+7. Bg5 {book} c6 {book} 8. Qd2 {book} Rb8 {book} 9. Bh6 {ERR/0 0.002s}
+Bxh6 {ERR/0 0.002s} 10. a3 {ERR/0 0.002s}
+Bxd2+ {ERR/0 0.001s, White's connection stalls} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "8"]
+[White "OldEngine"]
+[Black "NewEngine"]
+[Result "0-1"]
+[GameDuration "00:00:10"]
+[GameStartTime "2026-01-08T16:14:20 +0100"]
+[GameEndTime "2026-01-08T16:14:30 +0100"]
+[PlyCount "17"]
+[Termination "time forfeit"]
+[TimeControl "10+0.1"]
+[ECO "A21"]
+[Opening "English Opening: King's English Variation, Kramnik-Shirov Counterattack"]
+
+1. c4 {book} e5 {book} 2. Nc3 {book} Bb4 {book} 3. g3 {book} Bxc3 {book}
+4. bxc3 {book} d6 {book} 5. Bg2 {book} Nc6 {book} 6. d3 {book} Nge7 {book}
+7. f4 {book} Ng6 {book} 8. Nf3 {book} exf4 {book}
+9. gxf4 {ERR/0 10.213s, White loses on time} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "5"]
+[White "OldEngine"]
+[Black "NewEngine"]
+[Result "0-1"]
+[GameDuration "00:01:00"]
+[GameStartTime "2026-01-08T16:14:20 +0100"]
+[GameEndTime "2026-01-08T16:15:20 +0100"]
+[PlyCount "16"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "E81"]
+[Opening "King's Indian Defense: Sämisch Variation, Bobotsov-Korchnoi-Petrosian Variation"]
+
+1. d4 {book} Nf6 {book} 2. c4 {book} g6 {book} 3. f3 {book} Bg7 {book}
+4. e4 {book} d6 {book} 5. Ne2 {book} O-O {book} 6. Nbc3 {book} Nbd7 {book}
+7. Bg5 {book} c6 {book} 8. Qd2 {book} Rb8 {book} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "6"]
+[White "NewEngine"]
+[Black "OldEngine"]
+[Result "0-1"]
+[GameDuration "00:00:00"]
+[GameStartTime "2026-01-08T16:14:20 +0100"]
+[GameEndTime "2026-01-08T16:15:20 +0100"]
+[PlyCount "16"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "B00"]
+[Opening "Lion Defense: Lion's Jaw"]
+
+1. d4 {book} d6 {book} 2. e4 {book} Nf6 {book} 3. f3 {book} c5 {book}
+4. d5 {book} g6 {book} 5. c4 {book} Bg7 {book} 6. Ne2 {book} O-O {book}
+7. Nec3 {book} e6 {book} 8. Be3 {book} Na6 {book} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "6"]
+[White "OldEngine"]
+[Black "NewEngine"]
+[Result "1-0"]
+[GameDuration "00:00:00"]
+[GameStartTime "2026-01-08T16:14:20 +0100"]
+[GameEndTime "2026-01-08T16:15:20 +0100"]
+[PlyCount "16"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "B00"]
+[Opening "Lion Defense: Lion's Jaw"]
+
+1. d4 {book} d6 {book} 2. e4 {book} Nf6 {book} 3. f3 {book} c5 {book}
+4. d5 {book} g6 {book} 5. c4 {book} Bg7 {book} 6. Ne2 {book} O-O {book}
+7. Nec3 {book} e6 {book} 8. Be3 {book} Na6 {book} 1-0
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "8"]
+[White "NewEngine"]
+[Black "OldEngine"]
+[Result "0-1"]
+[GameDuration "00:01:00"]
+[GameStartTime "2026-01-08T16:14:20 +0100"]
+[GameEndTime "2026-01-08T16:15:20 +0100"]
+[PlyCount "16"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "A21"]
+[Opening "English Opening: King's English Variation, Kramnik-Shirov Counterattack"]
+
+1. c4 {book} e5 {book} 2. Nc3 {book} Bb4 {book} 3. g3 {book} Bxc3 {book}
+4. bxc3 {book} d6 {book} 5. Bg2 {book} Nc6 {book} 6. d3 {book} Nge7 {book}
+7. f4 {book} Ng6 {book} 8. Nf3 {book} exf4 {book} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "7"]
+[White "OldEngine"]
+[Black "NewEngine"]
+[Result "1-0"]
+[GameDuration "00:01:00"]
+[GameStartTime "2026-01-08T16:14:20 +0100"]
+[GameEndTime "2026-01-08T16:15:20 +0100"]
+[PlyCount "17"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "D37"]
+[Opening "Queen's Gambit Declined: Three Knights Variation"]
+
+1. d4 {book} Nf6 {book} 2. c4 {book} e6 {book} 3. Nf3 {book} d5 {book}
+4. Nc3 {book} Be7 {book} 5. Qc2 {book} c5 {book} 6. dxc5 {book} d4 {book}
+7. Na4 {book} Nc6 {book} 8. a3 {book} e5 {book}
+9. Nxd4 {ERR/0 0.005s, Black's connection stalls} 1-0
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "7"]
+[White "NewEngine"]
+[Black "OldEngine"]
+[Result "0-1"]
+[GameDuration "00:01:00"]
+[GameStartTime "2026-01-08T16:14:20 +0100"]
+[GameEndTime "2026-01-08T16:15:20 +0100"]
+[PlyCount "18"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "D37"]
+[Opening "Queen's Gambit Declined: Three Knights Variation"]
+
+1. d4 {book} Nf6 {book} 2. c4 {book} e6 {book} 3. Nf3 {book} d5 {book}
+4. Nc3 {book} Be7 {book} 5. Qc2 {book} c5 {book} 6. dxc5 {book} d4 {book}
+7. Na4 {book} Nc6 {book} 8. a3 {book} e5 {book} 9. Qc3 {ERR/0 0.002s}
+dxc3 {ERR/0 0.003s, White's connection stalls} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "10"]
+[White "NewEngine"]
+[Black "OldEngine"]
+[Result "1-0"]
+[GameDuration "00:00:10"]
+[GameStartTime "2026-01-08T16:15:20 +0100"]
+[GameEndTime "2026-01-08T16:15:30 +0100"]
+[PlyCount "20"]
+[Termination "time forfeit"]
+[TimeControl "10+0.1"]
+[ECO "A48"]
+[Opening "Torre Attack: Fianchetto Defense"]
+
+1. d4 {book} Nf6 {book} 2. Nf3 {book} g6 {book} 3. Bg5 {book} Bg7 {book}
+4. e3 {book} O-O {book} 5. Be2 {book} d6 {book} 6. c4 {book} c5 {book}
+7. Nc3 {book} Bf5 {book} 8. O-O {book} Ne4 {book} 9. Qd2 {ERR/0 0.002s}
+Nxd2 {ERR/0 0.003s} 10. a3 {ERR/0 0.003s}
+Nxf1 {ERR/0 10.310s, Black loses on time} 1-0
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "9"]
+[White "NewEngine"]
+[Black "OldEngine"]
+[Result "1-0"]
+[GameDuration "00:01:00"]
+[GameStartTime "2026-01-08T16:14:30 +0100"]
+[GameEndTime "2026-01-08T16:15:30 +0100"]
+[PlyCount "27"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "D01"]
+[Opening "Richter-Veresov Attack"]
+
+1. d4 {book} Nf6 {book} 2. Nc3 {book} d5 {book} 3. Bg5 {book} c6 {book}
+4. Qd3 {book} Qa5 {book} 5. Bxf6 {book} exf6 {book} 6. e4 {book} Bb4 {book}
+7. exd5 {book} O-O {book} 8. Ne2 {book} cxd5 {book} 9. Qh3 {ERR/0 0.001s}
+Bxh3 {ERR/0 0.001s} 10. g3 {ERR/0 0.000s} Bxf1 {ERR/0 0.000s}
+11. a3 {ERR/0 0.000s} Bxe2 {ERR/0 0.000s} 12. Rd1 {ERR/0 0.000s}
+Bxd1 {ERR/0 0.000s} 13. b3 {ERR/0 0.000s} Bxc3+ {ERR/0 0.000s}
+14. Kf1 {0.00/0 0.000s, Black's connection stalls} 1-0
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "9"]
+[White "OldEngine"]
+[Black "NewEngine"]
+[Result "1-0"]
+[GameDuration "00:01:00"]
+[GameStartTime "2026-01-08T16:14:30 +0100"]
+[GameEndTime "2026-01-08T16:15:30 +0100"]
+[PlyCount "21"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "D01"]
+[Opening "Richter-Veresov Attack"]
+
+1. d4 {book} Nf6 {book} 2. Nc3 {book} d5 {book} 3. Bg5 {book} c6 {book}
+4. Qd3 {book} Qa5 {book} 5. Bxf6 {book} exf6 {book} 6. e4 {book} Bb4 {book}
+7. exd5 {book} O-O {book} 8. Ne2 {book} cxd5 {book} 9. a3 {ERR/0 0.001s}
+Qb5 {ERR/0 0.001s} 10. Qxb5 {ERR/0 0.001s} Re8 {ERR/0 0.001s}
+11. Qxe8+ {ERR/0 0.001s, Black's connection stalls} 1-0
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "11"]
+[White "NewEngine"]
+[Black "OldEngine"]
+[Result "1-0"]
+[GameDuration "00:01:00"]
+[GameStartTime "2026-01-08T16:15:20 +0100"]
+[GameEndTime "2026-01-08T16:16:20 +0100"]
+[PlyCount "19"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "A41"]
+[Opening "Queen's Pawn Game"]
+
+1. d4 {book} d6 {book} 2. Bg5 {book} g6 {book} 3. c4 {book} Bg7 {book}
+4. Nc3 {book} h6 {book} 5. Bh4 {book} c5 {book} 6. d5 {book} Qa5 {book}
+7. Qd2 {book} f5 {book} 8. e3 {book} Nd7 {book} 9. Nb1 {ERR/0 0.002s}
+Bxb2 {ERR/0 0.001s} 10. a3 {ERR/0 0.001s, Black's connection stalls} 1-0
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "10"]
+[White "OldEngine"]
+[Black "NewEngine"]
+[Result "0-1"]
+[GameDuration "00:00:00"]
+[GameStartTime "2026-01-08T16:15:20 +0100"]
+[GameEndTime "2026-01-08T16:16:20 +0100"]
+[PlyCount "16"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "A48"]
+[Opening "Torre Attack: Fianchetto Defense"]
+
+1. d4 {book} Nf6 {book} 2. Nf3 {book} g6 {book} 3. Bg5 {book} Bg7 {book}
+4. e3 {book} O-O {book} 5. Be2 {book} d6 {book} 6. c4 {book} c5 {book}
+7. Nc3 {book} Bf5 {book} 8. O-O {book} Ne4 {book} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "12"]
+[White "NewEngine"]
+[Black "OldEngine"]
+[Result "1-0"]
+[GameDuration "00:01:00"]
+[GameStartTime "2026-01-08T16:15:20 +0100"]
+[GameEndTime "2026-01-08T16:16:20 +0100"]
+[PlyCount "19"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "D05"]
+[Opening "Rubinstein Opening"]
+
+1. d4 {book} Nf6 {book} 2. Nf3 {book} e6 {book} 3. e3 {book} c5 {book}
+4. Bd3 {book} d5 {book} 5. b3 {book} Qa5+ {book} 6. c3 {book} Nc6 {book}
+7. O-O {book} Qc7 {book} 8. c4 {book} dxc4 {book} 9. a3 {ERR/0 0.004s}
+cxd3 {ERR/0 0.003s} 10. Qc2 {ERR/0 0.002s, Black's connection stalls} 1-0
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "11"]
+[White "OldEngine"]
+[Black "NewEngine"]
+[Result "1-0"]
+[GameDuration "00:01:00"]
+[GameStartTime "2026-01-08T16:15:20 +0100"]
+[GameEndTime "2026-01-08T16:16:20 +0100"]
+[PlyCount "23"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "A41"]
+[Opening "Queen's Pawn Game"]
+
+1. d4 {book} d6 {book} 2. Bg5 {book} g6 {book} 3. c4 {book} Bg7 {book}
+4. Nc3 {book} h6 {book} 5. Bh4 {book} c5 {book} 6. d5 {book} Qa5 {book}
+7. Qd2 {book} f5 {book} 8. e3 {book} Nd7 {book} 9. Bxe7 {ERR/0 0.002s}
+Qa3 {ERR/0 0.002s} 10. bxa3 {ERR/0 0.003s} Bd4 {ERR/0 0.001s}
+11. exd4 {ERR/0 0.001s} Ne5 {ERR/0 0.001s}
+12. dxe5 {ERR/0 0.002s, Black's connection stalls} 1-0
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "12"]
+[White "OldEngine"]
+[Black "NewEngine"]
+[Result "0-1"]
+[GameDuration "00:01:00"]
+[GameStartTime "2026-01-08T16:15:20 +0100"]
+[GameEndTime "2026-01-08T16:16:20 +0100"]
+[PlyCount "36"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "D05"]
+[Opening "Rubinstein Opening"]
+
+1. d4 {book} Nf6 {book} 2. Nf3 {book} e6 {book} 3. e3 {book} c5 {book}
+4. Bd3 {book} d5 {book} 5. b3 {book} Qa5+ {book} 6. c3 {book} Nc6 {book}
+7. O-O {book} Qc7 {book} 8. c4 {book} dxc4 {book} 9. bxc4 {ERR/0 0.004s}
+Qg3 {ERR/0 0.003s} 10. fxg3 {ERR/0 0.003s} Ne5 {ERR/0 0.002s}
+11. dxe5 {ERR/0 0.001s} Bd6 {ERR/0 0.001s} 12. exd6 {ERR/0 0.001s}
+Ne4 {ERR/0 0.001s} 13. Bxe4 {ERR/0 0.001s} b5 {ERR/0 0.001s}
+14. Bxa8 {ERR/0 0.000s} Bb7 {ERR/0 0.001s} 15. Bxb7 {ERR/0 0.001s}
+e5 {ERR/0 0.001s} 16. cxb5 {ERR/0 0.001s} c4 {ERR/0 0.001s}
+17. Nxe5 {ERR/0 0.001s} c3 {ERR/0 0.001s} 18. Nxc3 {ERR/0 0.001s}
+a5 {0.00/0 0.000s, White's connection stalls} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "13"]
+[White "OldEngine"]
+[Black "NewEngine"]
+[Result "0-1"]
+[GameDuration "00:01:00"]
+[GameStartTime "2026-01-08T16:15:30 +0100"]
+[GameEndTime "2026-01-08T16:16:30 +0100"]
+[PlyCount "30"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "A43"]
+[Opening "Indian Defense: Pseudo-Benko"]
+
+1. d4 {book} Nf6 {book} 2. Nf3 {book} c5 {book} 3. d5 {book} b5 {book}
+4. Bg5 {book} d6 {book} 5. Bxf6 {book} exf6 {book} 6. e3 {book} a6 {book}
+7. a4 {book} b4 {book} 8. Nbd2 {book} g6 {book} 9. Bxa6 {ERR/0 0.001s}
+b3 {ERR/0 0.002s} 10. Bxc8 {ERR/0 0.002s} Qd7 {ERR/0 0.001s}
+11. Bxd7+ {ERR/0 0.001s} Ke7 {ERR/0 0.000s} 12. cxb3 {ERR/0 0.001s}
+Rxa4 {0.00/0 0.000s} 13. bxa4 {ERR/0 0.001s} Nc6 {ERR/0 0.000s}
+14. dxc6 {ERR/0 0.001s} c4 {ERR/0 0.000s} 15. Nxc4 {ERR/0 0.000s}
+d5 {0.00/0 0.000s, White's connection stalls} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "13"]
+[White "NewEngine"]
+[Black "OldEngine"]
+[Result "0-1"]
+[GameDuration "00:01:00"]
+[GameStartTime "2026-01-08T16:15:30 +0100"]
+[GameEndTime "2026-01-08T16:16:30 +0100"]
+[PlyCount "40"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "A43"]
+[Opening "Indian Defense: Pseudo-Benko"]
+
+1. d4 {book} Nf6 {book} 2. Nf3 {book} c5 {book} 3. d5 {book} b5 {book}
+4. Bg5 {book} d6 {book} 5. Bxf6 {book} exf6 {book} 6. e3 {book} a6 {book}
+7. a4 {book} b4 {book} 8. Nbd2 {book} g6 {book} 9. Ra3 {ERR/0 0.001s}
+bxa3 {ERR/0 0.001s} 10. Bb5+ {ERR/0 0.001s} axb5 {ERR/0 0.000s}
+11. Nc4 {ERR/0 0.001s} bxc4 {ERR/0 0.002s} 12. Qd3 {ERR/0 0.001s}
+cxd3 {ERR/0 0.001s} 13. Nd4 {ERR/0 0.001s} cxd4 {ERR/0 0.001s}
+14. b3 {ERR/0 0.000s} dxc2 {ERR/0 0.001s} 15. f3 {ERR/0 0.000s}
+c1=Q+ {ERR/0 0.000s} 16. Ke2 {ERR/0 0.000s} Qxh1 {ERR/0 0.001s}
+17. g3 {ERR/0 0.000s} dxe3 {ERR/0 0.000s} 18. h3 {ERR/0 0.000s}
+Bxh3 {ERR/0 0.000s} 19. b4 {ERR/0 0.000s} Rxa4 {ERR/0 0.000s}
+20. f4 {ERR/0 0.000s} Rxb4 {ERR/0 0.000s, White's connection stalls} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "14"]
+[White "NewEngine"]
+[Black "OldEngine"]
+[Result "0-1"]
+[GameDuration "00:01:00"]
+[GameStartTime "2026-01-08T16:15:30 +0100"]
+[GameEndTime "2026-01-08T16:16:30 +0100"]
+[PlyCount "26"]
+[Termination "abandoned"]
+[TimeControl "10+0.1"]
+[ECO "B00"]
+[Opening "Nimzowitsch Defense: Declined Variation"]
+
+1. e4 {book} Nc6 {book} 2. Nf3 {book} d5 {book} 3. exd5 {book} Qxd5 {book}
+4. Nc3 {book} Qh5 {book} 5. d4 {book} Bg4 {book} 6. Bb5 {book} O-O-O {book}
+7. Bxc6 {book} bxc6 {book} 8. Qe2 {book} Bxf3 {book} 9. a3 {ERR/0 0.003s}
+Bxe2 {ERR/0 0.005s} 10. Rf1 {ERR/0 0.002s} Bxf1 {ERR/0 0.002s}
+11. Nb1 {ERR/0 0.002s} Bxg2 {ERR/0 0.002s} 12. Bg5 {ERR/0 0.000s}
+Qxg5 {ERR/0 0.000s} 13. Nd2 {ERR/0 0.001s}
+Rxd4 {ERR/0 0.005s, White's connection stalls} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.08"]
+[Round "16"]
+[White "NewEngine"]
+[Black "OldEngine"]
+[Result "1-0"]
+[GameDuration "00:00:10"]
+[GameStartTime "2026-01-08T16:16:20 +0100"]
+[GameEndTime "2026-01-08T16:16:30 +0100"]
+[PlyCount "22"]
+[Termination "time forfeit"]
+[TimeControl "10+0.1"]
+[ECO "D37"]
+[Opening "Queen's Gambit Declined: Three Knights Variation"]
+
+1. Nf3 {book} Nf6 {book} 2. c4 {book} e6 {book} 3. Nc3 {book} d5 {book}
+4. d4 {book} a6 {book} 5. cxd5 {book} exd5 {book} 6. Bg5 {book} Be7 {book}
+7. e3 {book} O-O {book} 8. Bd3 {book} Be6 {book} 9. Bc4 {ERR/0 0.003s}
+dxc4 {ERR/0 0.003s} 10. Qb3 {ERR/0 0.003s} cxb3 {ERR/0 0.003s}
+11. Bh6 {ERR/0 0.001s} gxh6 {ERR/0 10.406s, Black loses on time} 1-0
+

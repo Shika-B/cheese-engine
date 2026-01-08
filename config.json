@@ -52,13 +52,13 @@
         "alpha": 0.05,
         "beta": 0.1,
         "elo0": 0.0,
-        "elo1": 10.0,
+        "elo1": 5.0,
         "model": "normalized",
         "enabled": true
     },
     "config_name": "config.json",
     "output": 0,
-    "seed": 17677380435784458629,
+    "seed": 17972993443201536214,
     "variant": 0,
     "type": 0,
     "gauntlet_seeds": 1,
@@ -67,7 +67,7 @@
     "wait": 0,
     "autosaveinterval": 20,
     "games": 2,
-    "rounds": 5000,
+    "rounds": 100,
     "concurrency": 8,
     "force_concurrency": false,
     "recover": true,
@@ -85,17 +85,17 @@
     },
     "engines": [
         {
-            "name": "The new engine",
+            "name": "NewEngine",
             "dir": "",
-            "cmd": "executables/v1-depth1",
+            "cmd": "executables/v2-alpha-beta-pruning",
             "args": "",
             "restart": false,
             "options": [],
             "limit": {
                 "tc": {
-                    "increment": 80,
+                    "increment": 100,
                     "fixed_time": 0,
-                    "time": 8000,
+                    "time": 10000,
                     "moves": 0,
                     "timemargin": 0
                 },
@@ -105,17 +105,17 @@
             "variant": 0
         },
         {
-            "name": "The old engine",
+            "name": "OldEngine",
             "dir": "",
-            "cmd": "executables/v1",
+            "cmd": "executables/v1-depth1",
             "args": "",
             "restart": false,
             "options": [],
             "limit": {
                 "tc": {
-                    "increment": 80,
+                    "increment": 100,
                     "fixed_time": 0,
-                    "time": 8000,
+                    "time": 10000,
                     "moves": 0,
                     "timemargin": 0
                 },
@@ -126,26 +126,26 @@
         }
     ],
     "stats": {
-        "The old engine vs The new engine": {
+        "OldEngine vs NewEngine": {
             "wins": 5,
-            "losses": 5,
+            "losses": 7,
             "draws": 0,
             "penta_WW": 1,
             "penta_WD": 0,
             "penta_WL": 3,
             "penta_DD": 0,
             "penta_LD": 0,
-            "penta_LL": 1
+            "penta_LL": 2
         },
-        "The new engine vs The old engine": {
-            "wins": 7,
+        "NewEngine vs OldEngine": {
+            "wins": 6,
             "losses": 8,
-            "draws": 3,
+            "draws": 0,
             "penta_WW": 1,
-            "penta_WD": 2,
-            "penta_WL": 3,
+            "penta_WD": 0,
+            "penta_WL": 4,
             "penta_DD": 0,
-            "penta_LD": 1,
+            "penta_LD": 0,
             "penta_LL": 2
         }
     }
