@@ -1,13 +1,14 @@
-use chess::{Board, ChessMove, MoveGen};
+use chess::{Board, ChessMove, Color, MoveGen};
 use vampirc_uci::Duration;
 
 use std::{collections::HashMap};
 
+
 // For debugging purpose. Returns the first available legal move.
-pub struct DoNothingEngine;
+pub struct AnyMove;
 
 
-impl<T: EvaluateEngine> SearchEngine<T> for DoNothingEngine {
+impl<T: EvaluateEngine> SearchEngine<T> for AnyMove {
     fn next_move(&mut self, board: &Board, _state: &GameState, _time_info: Option<TimeInfo>) -> Option<ChessMove> {
         MoveGen::new_legal(board).next()
     }
@@ -15,7 +16,7 @@ impl<T: EvaluateEngine> SearchEngine<T> for DoNothingEngine {
 
 
 pub trait EvaluateEngine {
-    fn evaluate(&self, board: &Board) -> i16;
+    fn evaluate(&self, board: &Board, is_white: bool) -> i16;
 }
 
 pub trait SearchEngine<T: EvaluateEngine> {

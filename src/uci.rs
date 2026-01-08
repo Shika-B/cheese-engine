@@ -1,11 +1,11 @@
-use crate::engine::{Engine, GameState};
+use crate::engine::{SearchEngine, EvaluateEngine, GameState};
 
 use chess::{Board, ChessMove, Piece, Square};
 use vampirc_uci::{UciMessage, UciMove, UciPiece, UciSquare, parse_one};
 
 use std::io::{self, BufRead};
 
-pub fn uci_loop<T: Engine>(engine: &mut T) -> () {
+pub fn uci_loop<E: EvaluateEngine, S: SearchEngine<E>>(engine: &mut S) -> () {
     let stdin = io::stdin();
 
     let mut game_state = GameState::default();

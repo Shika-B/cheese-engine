@@ -2,11 +2,14 @@ mod engine;
 mod uci;
 mod mcts;
 mod negamax;
+mod evaluation;
+use std::any::Any;
 
 use fern;
 use log;
 
-use crate::engine::{DoNothingEngine};
+use crate::engine::{AnyMove};
+use crate::evaluation::CountMaterial;
 use crate::uci::uci_loop;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -25,7 +28,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .apply()?;
 
     log::info!("Starting UCI loop");
-    let mut engine = DoNothingEngine; 
-    uci_loop(&mut engine);
+    let mut engine = AnyMove; 
+    uci_loop::<CountMaterial, _>(&mut engine);
     Ok(())
 }
