@@ -8,7 +8,7 @@ const TRANSPOTION_TABLE_SIZE: usize = 1_048_576; // 1_048_576 = 2**20
 
 const MATE_THRESHOLD: i16 = 29_000;
 
-const MAX_DEPTH: u16 = 5;
+const MAX_DEPTH: u16 = 3;
 
 #[derive(Debug, Copy, Clone)]
 pub enum ResultKind {
@@ -30,6 +30,7 @@ pub struct SearchResult {
     depth: u16,
     score: i16,
     kind: ResultKind,
+    best_move: Option<ChessMove>,
 }
 
 pub struct Negamax {
@@ -123,12 +124,18 @@ impl Negamax {
 
         let entry = self.transposition_table[transpo_idx];
 
+        let mut best_score = -i16::MAX;
+        let mut best_move = None;
+
         if entry.hash == board_hash && entry.depth >= depth {
             match entry.kind {
                 ResultKind::Exact => return entry.score,
                 ResultKind::LowerBound if entry.score >= beta => return entry.score,
                 ResultKind::UpperBound if entry.score <= alpha => return entry.score,
                 _ => {}
+            }
+            if let Some(mv) = entry.best_move {
+                best_move = Some(mv);
             }
         }
 
@@ -145,10 +152,20 @@ impl Negamax {
 
         // Store so that we can decide later the kind of bound we want to store in the transposition table
         let alpha_orig = alpha.clone();
-        let mut best_score = -i16::MAX;
         let targets = board.color_combined(!board.side_to_move());
 
         let mut legal_moves = MoveGen::new_legal(&board);
+
+        if let Some(mv) = best_move {
+            legal_moves.remove_move(mv);
+            state.make_move(mv);
+            let score = -self.search_eval::<E>(state, -beta, -alpha, depth - 1);
+            if score > alpha {
+                alpha = score;
+                best_move = Some(mv);
+            }
+            state.undo_last_move();
+        }
 
         legal_moves.set_iterator_mask(*targets);
         for mv in &mut legal_moves {
@@ -158,6 +175,7 @@ impl Negamax {
 
             if score > best_score {
                 best_score = score;
+                best_move = Some(mv)
             }
             alpha = alpha.max(best_score);
 
@@ -174,6 +192,7 @@ impl Negamax {
 
             if score > best_score {
                 best_score = score;
+                best_move = Some(mv)
             }
             alpha = alpha.max(best_score);
             if alpha >= beta {
@@ -196,6 +215,7 @@ impl Negamax {
             depth,
             score: best_score,
             kind,
+            best_move,
         };
 
         alpha
