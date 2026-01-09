@@ -13,7 +13,7 @@ pub fn uci_loop<E: EvaluateEngine, S: SearchEngine<E>>(engine: &mut S) -> () {
     for line in stdin.lock().lines() {
         let line = line.expect("Failed to read line");
         let uci_message = parse_one(&line);
-        log::debug!("Received: {:#?}", uci_message);
+        log::debug!("Received:{}", line);
         match uci_message {
             UciMessage::Uci => {
                 let name = UciMessage::id_name("Cheese");
@@ -79,7 +79,6 @@ pub fn uci_loop<E: EvaluateEngine, S: SearchEngine<E>>(engine: &mut S) -> () {
                 };
 
                 let best_move = engine.next_move(game_state.clone(), &time_control);
-                log::debug!("Found move {:#?}", best_move);
                 match best_move {
                     Some(mv) => {
                         let uci_move = into_uci_move(mv);

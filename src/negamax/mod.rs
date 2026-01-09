@@ -57,32 +57,48 @@ impl<E: EvaluateEngine> SearchEngine<E> for Negamax {
         let mut best_move = None;
         let mut last_score = 0;
         for curr_depth in 1..=MAX_DEPTH {
+            log::debug!("DEPTH {}", curr_depth);
             let mut window = 32;
             let mut best_score = -i16::MAX;
 
             loop {
                 let alpha_orig = last_score - window;
+                // let alpha_orig = -i16::MAX;
 
                 let mut alpha = alpha_orig;
                 let beta = last_score + window;
+                // let beta = i16::MAX;
 
                 let explore_first = [best_move];
                 let mv_iter = MvIter::new(&explore_first, &board);
-
+                
+                let mut aspiration_failed = false;
                 for mv in mv_iter {
                     state.make_move(mv);
                     let score = -self.search_eval::<E>(&mut state, -beta, -alpha, curr_depth);
                     state.undo_last_move();
 
+                    if curr_depth == MAX_DEPTH {
+                        log::debug!(
+                            "Considering mv {} at depth {} with score {}",
+                            mv,
+                            curr_depth,
+                            score
+                        );
+                    }
                     if score > best_score {
                         best_score = score;
                         best_move = Some(mv)
                     }
+                    if best_score <= alpha_orig || best_score >= beta {
+                        window *= 2;
+                        aspiration_failed = true;
+                        break 
+                    }
                     alpha = alpha.max(best_score);
                 }
-                if best_score <= alpha_orig || best_score >= beta {
-                    window *= 2;
-                } else {
+
+                if !aspiration_failed {
                     last_score = best_score;
                     break;
                 }
@@ -125,17 +141,18 @@ impl Negamax {
         let mut best_score = -i16::MAX;
         let mut best_move = None;
 
-        if entry.hash == board_hash && entry.depth >= depth {
-            match entry.kind {
-                ResultKind::Exact => return entry.score,
-                ResultKind::LowerBound if entry.score >= beta => return entry.score,
-                ResultKind::UpperBound if entry.score <= alpha => return entry.score,
-                _ => {}
-            }
-            if let Some(mv) = entry.best_move {
-                best_move = Some(mv);
-            }
-        }
+        /*  if entry.hash == board_hash && entry.depth >= depth {
+                    match entry.kind {
+                        ResultKind::Exact => return entry.score,
+                        ResultKind::LowerBound if entry.score >= beta => return entry.score,
+                        ResultKind::UpperBound if entry.score <= alpha => return entry.score,
+                        _ => {}
+                    }
+                    if let Some(mv) = entry.best_move {
+                        best_move = Some(mv);
+                    }
+                }
+        */
 
         if depth == 0 {
             return E::evaluate(state);
