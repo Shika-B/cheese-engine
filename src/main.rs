@@ -7,6 +7,7 @@ mod uci;
 use fern;
 use log;
 
+use crate::engine::{GameState, SearchEngine};
 use crate::evaluation::CountMaterial;
 use crate::negamax::Negamax;
 use crate::uci::uci_loop;
