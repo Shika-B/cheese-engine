@@ -1,4 +1,4 @@
-use chess::{Board, BoardStatus, ChessMove, Color, MoveGen};
+use chess::{Board, BoardStatus, ChessMove, MoveGen};
 use vampirc_uci::Duration;
 
 use std::collections::HashMap;
@@ -69,13 +69,13 @@ impl GameState {
     }
 
     pub fn is_draw(&self) -> bool {
-        return (self.last_board().status() == BoardStatus::Stalemate
+        return self.last_board().status() == BoardStatus::Stalemate
             || self.moves_since_capture >= 50
             || self
                 .seen_positions
                 .iter()
                 .max()
-                .is_some_and(|(_hash, max)| *max >= 3));
+                .is_some_and(|(_hash, max)| *max >= 3) ;
     }
 }
 

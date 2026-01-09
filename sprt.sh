@@ -17,7 +17,6 @@ fastchess \
     -openings file=8moves_v3.pgn format=pgn order=random \
     -each tc=10+0.1 \
     -rounds 30 -repeat \
-    -concurrency 8 \
+    -concurrency 2 \
     -recover \
-    -sprt elo0=0 elo1=5 alpha=0.05 beta=0.1
-w
+    -sprt elo0=0 elo1=5 alpha=0.05 beta=0.1 2>&1 | grep -v "Last info string with score not found"

@@ -1,4 +1,4 @@
-use chess::{Board, BoardStatus, Color, Piece};
+use chess::{BoardStatus, Color, Piece};
 
 use crate::engine::{EvaluateEngine, GameState};
 
