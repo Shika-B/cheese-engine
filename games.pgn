@@ -10183,3 +10183,150 @@ Nxd7 {ERR/0 0.095s} 10. Qxd3 {ERR/0 0.244s} Bb4 {ERR/0 0.311s}
 cxd4 {ERR/0 0.036s} 10. Nxd4 {ERR/0 0.040s} Nb8 {ERR/0 0.199s}
 11. dxe6 {ERR/0 10.390s, White loses on time} 0-1
 
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.10"]
+[Round "1"]
+[White "OldEngine"]
+[Black "NewEngine"]
+[Result "0-1"]
+[GameDuration "00:00:21"]
+[GameStartTime "2026-01-10T14:42:11 +0100"]
+[GameEndTime "2026-01-10T14:42:33 +0100"]
+[PlyCount "17"]
+[Termination "time forfeit"]
+[TimeControl "10+0.1"]
+[ECO "A07"]
+[Opening "King's Indian Attack: Yugoslav Variation"]
+
+1. Nf3 {book} d5 {book} 2. g3 {book} c6 {book} 3. Bg2 {book} Nf6 {book}
+4. O-O {book} Bg4 {book} 5. c4 {book} e6 {book} 6. cxd5 {book} Bxf3 {book}
+7. Bxf3 {book} cxd5 {book} 8. Nc3 {book} Nc6 {book}
+9. a4 {ERR/0 21.588s, White loses on time} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.10"]
+[Round "2"]
+[White "NewEngine"]
+[Black "OldEngine"]
+[Result "1-0"]
+[GameDuration "00:00:23"]
+[GameStartTime "2026-01-10T14:42:33 +0100"]
+[GameEndTime "2026-01-10T14:42:57 +0100"]
+[PlyCount "18"]
+[Termination "time forfeit"]
+[TimeControl "10+0.1"]
+[ECO "A04"]
+[Opening "Zukertort Opening: Kingside Fianchetto"]
+
+1. Nf3 {book} g6 {book} 2. c4 {book} Bg7 {book} 3. g3 {book} Nf6 {book}
+4. Bg2 {book} O-O {book} 5. O-O {book} d6 {book} 6. Nc3 {book} a6 {book}
+7. Rb1 {book} c6 {book} 8. b4 {book} b5 {book} 9. cxb5 {ERR/0 0.046s}
+axb5 {ERR/0 23.484s, Black loses on time} 1-0
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.10"]
+[Round "2"]
+[White "OldEngine"]
+[Black "NewEngine"]
+[Result "0-1"]
+[GameDuration "00:00:18"]
+[GameStartTime "2026-01-10T14:42:57 +0100"]
+[GameEndTime "2026-01-10T14:43:15 +0100"]
+[PlyCount "19"]
+[Termination "time forfeit"]
+[TimeControl "10+0.1"]
+[ECO "A04"]
+[Opening "Zukertort Opening: Kingside Fianchetto"]
+
+1. Nf3 {book} g6 {book} 2. c4 {book} Bg7 {book} 3. g3 {book} Nf6 {book}
+4. Bg2 {book} O-O {book} 5. O-O {book} d6 {book} 6. Nc3 {book} a6 {book}
+7. Rb1 {book} c6 {book} 8. b4 {book} b5 {book} 9. cxb5 {ERR/0 3.425s}
+axb5 {ERR/0 0.015s} 10. a3 {ERR/0 14.713s, White loses on time} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.10"]
+[Round "1"]
+[White "OldEngine"]
+[Black "NewEngine"]
+[Result "0-1"]
+[GameDuration "00:00:16"]
+[GameStartTime "2026-01-10T14:43:54 +0100"]
+[GameEndTime "2026-01-10T14:44:11 +0100"]
+[PlyCount "17"]
+[Termination "time forfeit"]
+[TimeControl "10+0.1"]
+[ECO "B12"]
+[Opening "Caro-Kann Defense: Maróczy Variation"]
+
+1. e4 {book} c6 {book} 2. d4 {book} d5 {book} 3. f3 {book} e6 {book}
+4. Nc3 {book} Bb4 {book} 5. Bf4 {book} Ne7 {book} 6. Ne2 {book} O-O {book}
+7. a3 {book} Ba5 {book} 8. Qd3 {book} Nd7 {book}
+9. b4 {ERR/0 16.672s, White loses on time} 0-1
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.10"]
+[Round "2"]
+[White "NewEngine"]
+[Black "OldEngine"]
+[Result "1-0"]
+[GameDuration "00:00:41"]
+[GameStartTime "2026-01-10T14:44:11 +0100"]
+[GameEndTime "2026-01-10T14:44:53 +0100"]
+[PlyCount "18"]
+[Termination "time forfeit"]
+[TimeControl "10+0.1"]
+[ECO "B30"]
+[Opening "Sicilian Defense: Old Sicilian"]
+
+1. e4 {book} c5 {book} 2. Nf3 {book} Nc6 {book} 3. Nc3 {book} e5 {book}
+4. Bc4 {book} Be7 {book} 5. Nd5 {book} Nf6 {book} 6. Nxe7 {book} Qxe7 {book}
+7. d3 {book} d6 {book} 8. c3 {book} Be6 {book} 9. Bb5 {ERR/0 0.016s}
+a6 {ERR/0 41.425s, Black loses on time} 1-0
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.10"]
+[Round "1"]
+[White "NewEngine"]
+[Black "OldEngine"]
+[Result "1-0"]
+[GameDuration "00:02:13"]
+[GameStartTime "2026-01-10T14:43:54 +0100"]
+[GameEndTime "2026-01-10T14:46:08 +0100"]
+[PlyCount "19"]
+[Termination "time forfeit"]
+[TimeControl "10+0.1"]
+[ECO "B12"]
+[Opening "Caro-Kann Defense: Maróczy Variation"]
+
+1. e4 {book} c6 {book} 2. d4 {book} d5 {book} 3. f3 {book} e6 {book}
+4. Nc3 {book} Bb4 {book} 5. Bf4 {book} Ne7 {book} 6. Ne2 {book} O-O {book}
+7. a3 {book} Ba5 {book} 8. Qd3 {book} Nd7 {book} 9. b4 {ERR/0 0.007s}
+dxe4 {ERR/0 3.657s} 10. Qxe4 {ERR/0 0.009s, Black loses on time} 1-0
+
+[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.01.10"]
+[Round "3"]
+[White "NewEngine"]
+[Black "OldEngine"]
+[Result "1-0"]
+[GameDuration "00:00:21"]
+[GameStartTime "2026-01-10T14:46:08 +0100"]
+[GameEndTime "2026-01-10T14:46:30 +0100"]
+[PlyCount "18"]
+[Termination "time forfeit"]
+[TimeControl "10+0.1"]
+[ECO "C02"]
+[Opening "French Defense: Advance Variation, Wade Variation"]
+
+1. e4 {book} e6 {book} 2. d4 {book} d5 {book} 3. e5 {book} c5 {book}
+4. c3 {book} Bd7 {book} 5. Nf3 {book} Qb6 {book} 6. a3 {book} a5 {book}
+7. Bd3 {book} Bb5 {book} 8. O-O {book} Bxd3 {book} 9. Qxd3 {ERR/0 0.003s}
+cxd4 {ERR/0 21.093s, Black loses on time} 1-0
+

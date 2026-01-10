@@ -100,11 +100,10 @@ impl<E: EvaluateEngine> SearchEngine<E> for Negamax {
                         break;
                     }
                 }
-
                 if best_score <= alpha_orig {
-                    alpha_orig -= window;
+                    alpha_orig = alpha_orig.saturating_sub(window);
                 } else if best_score >= beta {
-                    beta += window;
+                    beta = beta.saturating_add(window);
                 } else {
                     last_score = best_score;
                     log::info!(
