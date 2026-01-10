@@ -15,7 +15,7 @@ const MATE_THRESHOLD: i16 = 29_000;
 
 const MAX_DEPTH: u16 = 4;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub enum ResultKind {
     Exact,
     LowerBound,
@@ -53,55 +53,71 @@ impl<E: EvaluateEngine> SearchEngine<E> for Negamax {
         let start = Instant::now();
 
         let board = state.last_board();
-
+        let board_hash = board.get_hash();
         let mut best_move = None;
         let mut last_score = 0;
-        for curr_depth in 1..=MAX_DEPTH {
+
+        let mut start_depth = 1;
+
+        let entry = self.get_tt_entry(board_hash);
+        if let Some(entry) = entry {
+            match entry.kind {
+                ResultKind::Exact => start_depth = entry.depth + 1,
+                ResultKind::LowerBound => (),
+                ResultKind::UpperBound => (),
+                _ => {}
+            }
+            if let Some(mv) = entry.best_move {
+                best_move = Some(mv);
+            }
+        }
+
+        for curr_depth in start_depth..=MAX_DEPTH {
             log::debug!("DEPTH {}", curr_depth);
             let mut window = 32;
-            let mut best_score = -i16::MAX;
+            let mut alpha_orig = last_score - window;
+            let mut beta = last_score + window;
 
             loop {
-                let alpha_orig = last_score - window;
-                // let alpha_orig = -i16::MAX;
-
-                let mut alpha = alpha_orig;
-                let beta = last_score + window;
-                // let beta = i16::MAX;
-
                 let explore_first = [best_move];
                 let mv_iter = MvIter::new(&explore_first, &board);
-                
-                let mut aspiration_failed = false;
+
+                let mut best_score = -i16::MAX;
+
+                let mut alpha = alpha_orig;
+
                 for mv in mv_iter {
                     state.make_move(mv);
-                    let score = -self.search_eval::<E>(&mut state, -beta, -alpha, curr_depth);
+                    let score = -self.search_eval::<E>(&mut state, -beta, -alpha, curr_depth - 1);
                     state.undo_last_move();
 
-                    if curr_depth == MAX_DEPTH {
-                        log::debug!(
-                            "Considering mv {} at depth {} with score {}",
-                            mv,
-                            curr_depth,
-                            score
-                        );
-                    }
                     if score > best_score {
                         best_score = score;
                         best_move = Some(mv)
                     }
-                    if best_score <= alpha_orig || best_score >= beta {
-                        window *= 2;
-                        aspiration_failed = true;
-                        break 
-                    }
                     alpha = alpha.max(best_score);
+                    if alpha >= beta {
+                        break;
+                    }
                 }
 
-                if !aspiration_failed {
+                if best_score <= alpha_orig {
+                    alpha_orig -= window;
+                } else if best_score >= beta {
+                    beta += window;
+                } else {
                     last_score = best_score;
+                    log::info!(
+                        "Final alpha {}, beta {}, window {}, score {} and mv {:?}",
+                        alpha_orig,
+                        beta,
+                        window,
+                        best_score,
+                        best_move.map(|x| x.to_string())
+                    );
                     break;
                 }
+                window *= 2;
             }
         }
 
@@ -112,6 +128,7 @@ impl<E: EvaluateEngine> SearchEngine<E> for Negamax {
             elapsed.as_millis(),
             (self.nodes_explored as f64 / elapsed.as_secs_f64()).round()
         );
+
         best_move
     }
 }
@@ -123,7 +140,20 @@ impl Negamax {
             transposition_table: vec![SearchResult::default(); TRANSPOTION_TABLE_SIZE],
         }
     }
+    fn get_tt_entry(&self, hash: u64) -> Option<SearchResult> {
+        let transpo_idx = (hash as usize) & (TRANSPOTION_TABLE_SIZE - 1);
 
+        let entry = self.transposition_table[transpo_idx];
+        if entry.hash == hash && entry.kind != ResultKind::None {
+            return Some(entry);
+        }
+        None
+    }
+
+    fn save_tt_entry(&mut self, search_result: SearchResult) {
+        let transpo_idx = (search_result.hash as usize) & (TRANSPOTION_TABLE_SIZE - 1);
+        self.transposition_table[transpo_idx] = search_result;
+    }
     pub fn search_eval<E: EvaluateEngine>(
         &mut self,
         state: &mut GameState,
@@ -134,25 +164,28 @@ impl Negamax {
         self.nodes_explored += 1;
         let board = state.last_board();
         let board_hash = board.get_hash();
-        let transpo_idx = (board_hash as usize) & (TRANSPOTION_TABLE_SIZE - 1);
 
-        let entry = self.transposition_table[transpo_idx];
+        let entry = self.get_tt_entry(board_hash);
 
         let mut best_score = -i16::MAX;
         let mut best_move = None;
 
-        /*  if entry.hash == board_hash && entry.depth >= depth {
-                    match entry.kind {
-                        ResultKind::Exact => return entry.score,
-                        ResultKind::LowerBound if entry.score >= beta => return entry.score,
-                        ResultKind::UpperBound if entry.score <= alpha => return entry.score,
-                        _ => {}
-                    }
-                    if let Some(mv) = entry.best_move {
-                        best_move = Some(mv);
-                    }
+        let mut replace_entry = entry.is_none();
+        if let Some(entry) = entry {
+            replace_entry |= entry.depth <= depth;
+
+            if entry.depth >= depth {
+                match entry.kind {
+                    ResultKind::Exact => return entry.score,
+                    ResultKind::LowerBound if entry.score >= beta => return entry.score,
+                    ResultKind::UpperBound if entry.score <= alpha => return entry.score,
+                    _ => {}
                 }
-        */
+            }
+            if let Some(mv) = entry.best_move {
+                best_move = Some(mv);
+            }
+        }
 
         if depth == 0 {
             return E::evaluate(state);
@@ -196,14 +229,15 @@ impl Negamax {
             ResultKind::Exact
         };
 
-        self.transposition_table[transpo_idx] = SearchResult {
-            hash: board_hash,
-            depth,
-            score: best_score,
-            kind,
-            best_move,
-        };
-
+        if replace_entry {
+            self.save_tt_entry(SearchResult {
+                hash: board_hash,
+                depth,
+                score: best_score,
+                kind,
+                best_move,
+            });
+        }
         best_score
     }
 }
