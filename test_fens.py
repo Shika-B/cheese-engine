@@ -4,26 +4,6 @@ import tempfile
 import os
 from typing import List, Optional
 
-# List of FEN positions to test
-TEST_FENS = [
-    # Starting position
-    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-
-    # Middlegame positions
-    "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
-    "rnbqkb1r/ppp2ppp/4pn2/3p4/2PP4/2N2N2/PP2PPPP/R1BQKB1R w KQkq d6 0 5",
-
-    # Endgame positions
-    "8/8/8/4k3/8/8/4K3/8 w - - 0 1",
-    "8/8/4k3/8/8/4K3/8/7R w - - 0 1",
-    "8/8/8/3k4/3P4/3K4/8/8 w - - 0 1",# List of FEN positions to test
-
-    # Tactical positions
-    "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5Q2/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
-    "rnbqkb1r/pp1p1ppp/2p2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq e6 0 4",
-]
-
-
 def run_game(
     engine_path: str,
     fen: str,
@@ -144,10 +124,12 @@ def main():
     args = parser.parse_args()
 
     # Load FENs
-    fens = TEST_FENS
+    
     if args.fens:
         with open(args.fens, 'r') as f:
             fens = [line.strip() for line in f if line.strip() and not line.startswith('#')]
+    else:
+        raise ValueError("Need to specify a FEN strings file")
 
     print(f"Testing engine: {args.engine}")
     print(f"Number of positions: {len(fens)}")
