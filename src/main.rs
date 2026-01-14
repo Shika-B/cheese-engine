@@ -8,7 +8,7 @@ use fern;
 use log;
 
 use crate::engine::{GameState, SearchEngine};
-use crate::evaluation::CountMaterial;
+use crate::evaluation::{CountMaterial, PstEval};
 use crate::negamax::Negamax;
 use crate::uci::uci_loop;
 
@@ -31,6 +31,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     log::info!("Starting UCI loop");
     let mut engine = Negamax::new();
-    uci_loop::<CountMaterial, _>(&mut engine);
+    uci_loop::<PstEval, _>(&mut engine);
     Ok(())
 }

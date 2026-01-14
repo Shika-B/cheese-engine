@@ -28,65 +28,96 @@ pub trait SearchEngine<T: EvaluateEngine> {
     fn ponder(&mut self) {}
 }
 
+/// Undo information for a single move
+#[derive(Debug, Clone, Copy)]
+struct UndoInfo {
+    mv: ChessMove,
+    prev_board: Board,
+}
+
 #[derive(Debug, Clone)]
 pub struct GameState {
-    /// Total number of moves played in the game
-    pub num_moves: u16,
-    /// Total number of moves played since the last piece got captured
-    /// To be used for implementation of the [50 moves rule](https://en.wikipedia.org/wiki/Fifty-move_rule)
-    pub moves_since_capture: u16,
+    /// Current board position
+    board: Board,
+    /// Stack of undo information (move + previous board state)
+    undo_stack: Vec<UndoInfo>,
     /// A map counting the number of times each position was seen so far.
-    /// To be used for implementation of the [threefold repetition rule](https://en.wikipedia.org/wiki/Threefold_repetition)  
-    pub seen_positions: HashMap<u64, usize>,
-    /// A list of the played moves, for undoing capabilities
-    pub boards: Vec<Board>,
+    /// To be used for implementation of the [threefold repetition rule](https://en.wikipedia.org/wiki/Threefold_repetition)
+    seen_positions: HashMap<u64, u8>,
 }
 
 impl GameState {
+    #[inline(always)]
     pub fn last_board(&self) -> Board {
-        self.boards.last().cloned().unwrap_or_default()
+        self.board
     }
 
-    pub fn make_move(&mut self, mv: ChessMove) -> Board {
-        let board = self.last_board();
+    #[inline]
+    pub fn make_move(&mut self, mv: ChessMove) {
+        // Store undo info
+        let undo_info = UndoInfo {
+            mv,
+            prev_board: self.board,
+        };
+        self.undo_stack.push(undo_info);
 
-        if let Some(_) = board.color_on(mv.get_dest()) {
-            self.moves_since_capture = 0;
-        }
-        self.num_moves += 1;
-        let board = board.make_move_new(mv);
-        self.boards.push(board);
+        // Make the move
+        self.board = self.board.make_move_new(mv);
 
-        let count = self.seen_positions.entry(board.get_hash()).or_insert(0);
-        *count += 1;
-
-        board
+        // Update repetition tracking
+        let hash = self.board.get_hash();
+        *self.seen_positions.entry(hash).or_insert(0) += 1;
     }
 
+    #[inline]
     pub fn undo_last_move(&mut self) {
-        let last_board = self.boards.pop().unwrap();
-        *self.seen_positions.get_mut(&last_board.get_hash()).unwrap() -= 1;
+        let undo_info = self.undo_stack.pop().unwrap();
+
+        // Decrement repetition count
+        let hash = self.board.get_hash();
+        if let Some(count) = self.seen_positions.get_mut(&hash) {
+            *count -= 1;
+        }
+
+        // Restore previous board
+        self.board = undo_info.prev_board;
     }
 
+    #[inline]
     pub fn is_draw(&self) -> bool {
-        return self.last_board().status() == BoardStatus::Stalemate
-            || self.moves_since_capture >= 50
-            || self
-                .seen_positions
-                .iter()
-                .max()
-                .is_some_and(|(_hash, max)| *max >= 3) ;
+        // Check stalemate
+        if self.board.status() == BoardStatus::Stalemate {
+            return true;
+        }
+
+        // Check threefold repetition
+        let current_hash = self.board.get_hash();
+        if let Some(&count) = self.seen_positions.get(&current_hash) {
+            if count >= 3 {
+                return true;
+            }
+        }
+
+        false
+    }
+
+    /// Get the current ply count (for mate distance calculation)
+    #[inline(always)]
+    pub fn ply(&self) -> usize {
+        self.undo_stack.len()
     }
 }
 
 impl Default for GameState {
     fn default() -> Self {
+        let board = Board::default();
+        let mut seen_positions = HashMap::with_capacity(128);
+        seen_positions.insert(board.get_hash(), 1);
+
         Self {
-            num_moves: 0,
-            moves_since_capture: 0,
-            // Costs basically nothing to preallocate
-            seen_positions: HashMap::with_capacity(128),
-            boards: Vec::with_capacity(128),
+            board,
+            undo_stack: Vec::with_capacity(128),
+            seen_positions,
         }
     }
 }

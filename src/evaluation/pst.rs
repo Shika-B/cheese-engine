@@ -1,0 +1,497 @@
+use chess::{Board, BoardStatus, Color, Piece, Square, BitBoard, File, EMPTY};
+
+use crate::engine::{EvaluateEngine, GameState};
+
+const MATE_VALUE: i16 = 30_000;
+
+// Material values (centipawns)
+const PAWN_VALUE: i16 = 100;
+const KNIGHT_VALUE: i16 = 320;
+const BISHOP_VALUE: i16 = 330;
+const ROOK_VALUE: i16 = 500;
+const QUEEN_VALUE: i16 = 900;
+
+// Bonus values
+const BISHOP_PAIR_BONUS: i16 = 50;
+const ROOK_OPEN_FILE_BONUS: i16 = 25;
+const ROOK_SEMI_OPEN_FILE_BONUS: i16 = 15;
+const PASSED_PAWN_BONUS: [i16; 8] = [0, 10, 20, 40, 70, 120, 200, 0]; // By rank
+const DOUBLED_PAWN_PENALTY: i16 = -15;
+const ISOLATED_PAWN_PENALTY: i16 = -20;
+const KING_SAFETY_PAWN_SHIELD: i16 = 10;
+
+// Piece-Square Tables (White's perspective, flipped for Black)
+// Values are from White's perspective (rank 0 = 1st rank for White)
+
+const PAWN_PST_MG: [i16; 64] = [
+      0,   0,   0,   0,   0,   0,   0,   0,
+     50,  50,  50,  50,  50,  50,  50,  50,
+     10,  10,  20,  30,  30,  20,  10,  10,
+      5,   5,  10,  25,  25,  10,   5,   5,
+      0,   0,   0,  20,  20,   0,   0,   0,
+      5,  -5, -10,   0,   0, -10,  -5,   5,
+      5,  10,  10, -20, -20,  10,  10,   5,
+      0,   0,   0,   0,   0,   0,   0,   0,
+];
+
+const PAWN_PST_EG: [i16; 64] = [
+      0,   0,   0,   0,   0,   0,   0,   0,
+     80,  80,  80,  80,  80,  80,  80,  80,
+     50,  50,  50,  50,  50,  50,  50,  50,
+     30,  30,  30,  30,  30,  30,  30,  30,
+     20,  20,  20,  20,  20,  20,  20,  20,
+     10,  10,  10,  10,  10,  10,  10,  10,
+     10,  10,  10,  10,  10,  10,  10,  10,
+      0,   0,   0,   0,   0,   0,   0,   0,
+];
+
+const KNIGHT_PST_MG: [i16; 64] = [
+    -50, -40, -30, -30, -30, -30, -40, -50,
+    -40, -20,   0,   0,   0,   0, -20, -40,
+    -30,   0,  10,  15,  15,  10,   0, -30,
+    -30,   5,  15,  20,  20,  15,   5, -30,
+    -30,   0,  15,  20,  20,  15,   0, -30,
+    -30,   5,  10,  15,  15,  10,   5, -30,
+    -40, -20,   0,   5,   5,   0, -20, -40,
+    -50, -40, -30, -30, -30, -30, -40, -50,
+];
+
+const KNIGHT_PST_EG: [i16; 64] = [
+    -50, -40, -30, -30, -30, -30, -40, -50,
+    -40, -20,   0,   0,   0,   0, -20, -40,
+    -30,   0,  10,  15,  15,  10,   0, -30,
+    -30,   5,  15,  20,  20,  15,   5, -30,
+    -30,   0,  15,  20,  20,  15,   0, -30,
+    -30,   5,  10,  15,  15,  10,   5, -30,
+    -40, -20,   0,   5,   5,   0, -20, -40,
+    -50, -40, -30, -30, -30, -30, -40, -50,
+];
+
+const BISHOP_PST_MG: [i16; 64] = [
+    -20, -10, -10, -10, -10, -10, -10, -20,
+    -10,   0,   0,   0,   0,   0,   0, -10,
+    -10,   0,   5,  10,  10,   5,   0, -10,
+    -10,   5,   5,  10,  10,   5,   5, -10,
+    -10,   0,  10,  10,  10,  10,   0, -10,
+    -10,  10,  10,  10,  10,  10,  10, -10,
+    -10,   5,   0,   0,   0,   0,   5, -10,
+    -20, -10, -10, -10, -10, -10, -10, -20,
+];
+
+const BISHOP_PST_EG: [i16; 64] = [
+    -20, -10, -10, -10, -10, -10, -10, -20,
+    -10,   0,   0,   0,   0,   0,   0, -10,
+    -10,   0,   5,  10,  10,   5,   0, -10,
+    -10,   5,   5,  10,  10,   5,   5, -10,
+    -10,   0,  10,  10,  10,  10,   0, -10,
+    -10,  10,  10,  10,  10,  10,  10, -10,
+    -10,   5,   0,   0,   0,   0,   5, -10,
+    -20, -10, -10, -10, -10, -10, -10, -20,
+];
+
+const ROOK_PST_MG: [i16; 64] = [
+      0,   0,   0,   0,   0,   0,   0,   0,
+      5,  10,  10,  10,  10,  10,  10,   5,
+     -5,   0,   0,   0,   0,   0,   0,  -5,
+     -5,   0,   0,   0,   0,   0,   0,  -5,
+     -5,   0,   0,   0,   0,   0,   0,  -5,
+     -5,   0,   0,   0,   0,   0,   0,  -5,
+     -5,   0,   0,   0,   0,   0,   0,  -5,
+      0,   0,   0,   5,   5,   0,   0,   0,
+];
+
+const ROOK_PST_EG: [i16; 64] = [
+      0,   0,   0,   0,   0,   0,   0,   0,
+      5,  10,  10,  10,  10,  10,  10,   5,
+     -5,   0,   0,   0,   0,   0,   0,  -5,
+     -5,   0,   0,   0,   0,   0,   0,  -5,
+     -5,   0,   0,   0,   0,   0,   0,  -5,
+     -5,   0,   0,   0,   0,   0,   0,  -5,
+     -5,   0,   0,   0,   0,   0,   0,  -5,
+      0,   0,   0,   5,   5,   0,   0,   0,
+];
+
+const QUEEN_PST_MG: [i16; 64] = [
+    -20, -10, -10,  -5,  -5, -10, -10, -20,
+    -10,   0,   0,   0,   0,   0,   0, -10,
+    -10,   0,   5,   5,   5,   5,   0, -10,
+     -5,   0,   5,   5,   5,   5,   0,  -5,
+      0,   0,   5,   5,   5,   5,   0,  -5,
+    -10,   5,   5,   5,   5,   5,   0, -10,
+    -10,   0,   5,   0,   0,   0,   0, -10,
+    -20, -10, -10,  -5,  -5, -10, -10, -20,
+];
+
+const QUEEN_PST_EG: [i16; 64] = [
+    -20, -10, -10,  -5,  -5, -10, -10, -20,
+    -10,   0,   0,   0,   0,   0,   0, -10,
+    -10,   0,   5,   5,   5,   5,   0, -10,
+     -5,   0,   5,   5,   5,   5,   0,  -5,
+     -5,   0,   5,   5,   5,   5,   0,  -5,
+    -10,   0,   5,   5,   5,   5,   0, -10,
+    -10,   0,   0,   0,   0,   0,   0, -10,
+    -20, -10, -10,  -5,  -5, -10, -10, -20,
+];
+
+const KING_PST_MG: [i16; 64] = [
+    -30, -40, -40, -50, -50, -40, -40, -30,
+    -30, -40, -40, -50, -50, -40, -40, -30,
+    -30, -40, -40, -50, -50, -40, -40, -30,
+    -30, -40, -40, -50, -50, -40, -40, -30,
+    -20, -30, -30, -40, -40, -30, -30, -20,
+    -10, -20, -20, -20, -20, -20, -20, -10,
+     20,  20,   0,   0,   0,   0,  20,  20,
+     20,  30,  10,   0,   0,  10,  30,  20,
+];
+
+const KING_PST_EG: [i16; 64] = [
+    -50, -40, -30, -20, -20, -30, -40, -50,
+    -30, -20, -10,   0,   0, -10, -20, -30,
+    -30, -10,  20,  30,  30,  20, -10, -30,
+    -30, -10,  30,  40,  40,  30, -10, -30,
+    -30, -10,  30,  40,  40,  30, -10, -30,
+    -30, -10,  20,  30,  30,  20, -10, -30,
+    -30, -30,   0,   0,   0,   0, -30, -30,
+    -50, -30, -30, -30, -30, -30, -30, -50,
+];
+
+pub struct PstEval;
+
+impl PstEval {
+    /// Calculate game phase (0 = opening, 256 = endgame)
+    /// Based on remaining material
+    #[inline]
+    fn game_phase(board: &Board) -> i16 {
+        const KNIGHT_PHASE: i16 = 1;
+        const BISHOP_PHASE: i16 = 1;
+        const ROOK_PHASE: i16 = 2;
+        const QUEEN_PHASE: i16 = 4;
+        const TOTAL_PHASE: i16 = KNIGHT_PHASE * 4 + BISHOP_PHASE * 4 + ROOK_PHASE * 4 + QUEEN_PHASE * 2;
+
+        let mut phase = TOTAL_PHASE;
+
+        phase -= (board.pieces(Piece::Knight).popcnt() as i16) * KNIGHT_PHASE;
+        phase -= (board.pieces(Piece::Bishop).popcnt() as i16) * BISHOP_PHASE;
+        phase -= (board.pieces(Piece::Rook).popcnt() as i16) * ROOK_PHASE;
+        phase -= (board.pieces(Piece::Queen).popcnt() as i16) * QUEEN_PHASE;
+
+        // Scale to 0-256
+        (phase * 256 + (TOTAL_PHASE / 2)) / TOTAL_PHASE
+    }
+
+    /// Interpolate between middlegame and endgame scores
+    #[inline(always)]
+    fn interpolate(mg_score: i16, eg_score: i16, phase: i16) -> i16 {
+        ((mg_score * (256 - phase)) + (eg_score * phase)) / 256
+    }
+
+    /// Get piece-square table value for a piece on a square
+    #[inline]
+    fn pst_value(_piece: Piece, square: Square, color: Color, mg_table: &[i16; 64], eg_table: &[i16; 64], phase: i16) -> i16 {
+        let idx = if color == Color::White {
+            square.to_index()
+        } else {
+            // Flip square for black
+            square.to_index() ^ 56
+        };
+
+        Self::interpolate(mg_table[idx], eg_table[idx], phase)
+    }
+
+    /// Evaluate material and position using PSTs
+    fn evaluate_material_pst(board: &Board, phase: i16) -> i16 {
+        let mut score = 0;
+
+        let white = board.color_combined(Color::White);
+        let black = board.color_combined(Color::Black);
+
+        // Pawns
+        let pawns = board.pieces(Piece::Pawn);
+        for square in pawns & white {
+            score += PAWN_VALUE + Self::pst_value(Piece::Pawn, square, Color::White, &PAWN_PST_MG, &PAWN_PST_EG, phase);
+        }
+        for square in pawns & black {
+            score -= PAWN_VALUE + Self::pst_value(Piece::Pawn, square, Color::Black, &PAWN_PST_MG, &PAWN_PST_EG, phase);
+        }
+
+        // Knights
+        let knights = board.pieces(Piece::Knight);
+        for square in knights & white {
+            score += KNIGHT_VALUE + Self::pst_value(Piece::Knight, square, Color::White, &KNIGHT_PST_MG, &KNIGHT_PST_EG, phase);
+        }
+        for square in knights & black {
+            score -= KNIGHT_VALUE + Self::pst_value(Piece::Knight, square, Color::Black, &KNIGHT_PST_MG, &KNIGHT_PST_EG, phase);
+        }
+
+        // Bishops
+        let bishops = board.pieces(Piece::Bishop);
+        for square in bishops & white {
+            score += BISHOP_VALUE + Self::pst_value(Piece::Bishop, square, Color::White, &BISHOP_PST_MG, &BISHOP_PST_EG, phase);
+        }
+        for square in bishops & black {
+            score -= BISHOP_VALUE + Self::pst_value(Piece::Bishop, square, Color::Black, &BISHOP_PST_MG, &BISHOP_PST_EG, phase);
+        }
+
+        // Rooks
+        let rooks = board.pieces(Piece::Rook);
+        for square in rooks & white {
+            score += ROOK_VALUE + Self::pst_value(Piece::Rook, square, Color::White, &ROOK_PST_MG, &ROOK_PST_EG, phase);
+        }
+        for square in rooks & black {
+            score -= ROOK_VALUE + Self::pst_value(Piece::Rook, square, Color::Black, &ROOK_PST_MG, &ROOK_PST_EG, phase);
+        }
+
+        // Queens
+        let queens = board.pieces(Piece::Queen);
+        for square in queens & white {
+            score += QUEEN_VALUE + Self::pst_value(Piece::Queen, square, Color::White, &QUEEN_PST_MG, &QUEEN_PST_EG, phase);
+        }
+        for square in queens & black {
+            score -= QUEEN_VALUE + Self::pst_value(Piece::Queen, square, Color::Black, &QUEEN_PST_MG, &QUEEN_PST_EG, phase);
+        }
+
+        // Kings (no material value, just positional)
+        let king_sq = (board.pieces(Piece::King) & white).to_square();
+        score += Self::pst_value(Piece::King, king_sq, Color::White, &KING_PST_MG, &KING_PST_EG, phase);
+
+        let king_sq = (board.pieces(Piece::King) & black).to_square();
+        score -= Self::pst_value(Piece::King, king_sq, Color::Black, &KING_PST_MG, &KING_PST_EG, phase);
+
+        score
+    }
+
+    /// Check if a pawn is passed (no enemy pawns in front or on adjacent files)
+    #[inline]
+    fn is_passed_pawn(square: Square, color: Color, board: &Board) -> bool {
+        let file = square.get_file().to_index();
+        let rank = square.get_rank().to_index();
+
+        let enemy_pawns = board.pieces(Piece::Pawn) & board.color_combined(!color);
+
+        // Define the mask for blocking pawns
+        let blocking_files = if file == 0 {
+            0b01100000_01100000_01100000_01100000_01100000_01100000_01100000_01100000u64
+        } else if file == 7 {
+            0b00000110_00000110_00000110_00000110_00000110_00000110_00000110_00000110u64
+        } else {
+            let left_file = 1u64 << (file - 1);
+            let center_file = 1u64 << file;
+            let right_file = 1u64 << (file + 1);
+            let file_mask = left_file | center_file | right_file;
+            file_mask * 0x0101010101010101u64
+        };
+
+        // Define rank mask (squares in front)
+        let rank_mask = if color == Color::White {
+            // All ranks above
+            !((1u64 << ((rank + 1) * 8)) - 1)
+        } else {
+            // All ranks below
+            (1u64 << (rank * 8)) - 1
+        };
+
+        let passed_mask = BitBoard(blocking_files & rank_mask);
+        (enemy_pawns & passed_mask) == EMPTY
+    }
+
+    /// Evaluate pawn structure
+    fn evaluate_pawns(board: &Board) -> i16 {
+        let mut score = 0;
+
+        let white_pawns = board.pieces(Piece::Pawn) & board.color_combined(Color::White);
+        let black_pawns = board.pieces(Piece::Pawn) & board.color_combined(Color::Black);
+
+        // White pawns
+        for square in white_pawns {
+            let file = square.get_file().to_index();
+            let rank = square.get_rank().to_index();
+
+            // Passed pawn bonus
+            if Self::is_passed_pawn(square, Color::White, board) {
+                score += PASSED_PAWN_BONUS[rank];
+            }
+
+            // Doubled pawns
+            let file_mask = chess::get_file(square.get_file());
+            if (white_pawns & file_mask).popcnt() > 1 {
+                score += DOUBLED_PAWN_PENALTY;
+            }
+
+            // Isolated pawns (no friendly pawns on adjacent files)
+            let adjacent_files = if file == 0 {
+                chess::get_file(File::B)
+            } else if file == 7 {
+                chess::get_file(File::G)
+            } else {
+                chess::get_file(File::from_index((file - 1) as usize)) | chess::get_file(File::from_index((file + 1) as usize))
+            };
+
+            if (white_pawns & adjacent_files) == EMPTY {
+                score += ISOLATED_PAWN_PENALTY;
+            }
+        }
+
+        // Black pawns
+        for square in black_pawns {
+            let file = square.get_file().to_index();
+            let rank = square.get_rank().to_index();
+
+            // Passed pawn bonus (flipped rank for black)
+            if Self::is_passed_pawn(square, Color::Black, board) {
+                score -= PASSED_PAWN_BONUS[7 - rank];
+            }
+
+            // Doubled pawns
+            let file_mask = chess::get_file(square.get_file());
+            if (black_pawns & file_mask).popcnt() > 1 {
+                score -= DOUBLED_PAWN_PENALTY;
+            }
+
+            // Isolated pawns
+            let adjacent_files = if file == 0 {
+                chess::get_file(File::B)
+            } else if file == 7 {
+                chess::get_file(File::G)
+            } else {
+                chess::get_file(File::from_index((file - 1) as usize)) | chess::get_file(File::from_index((file + 1) as usize))
+            };
+
+            if (black_pawns & adjacent_files) == EMPTY {
+                score -= ISOLATED_PAWN_PENALTY;
+            }
+        }
+
+        score
+    }
+
+    /// Evaluate bishops
+    fn evaluate_bishops(board: &Board) -> i16 {
+        let mut score = 0;
+
+        let white_bishops = board.pieces(Piece::Bishop) & board.color_combined(Color::White);
+        let black_bishops = board.pieces(Piece::Bishop) & board.color_combined(Color::Black);
+
+        // Bishop pair bonus
+        if white_bishops.popcnt() >= 2 {
+            score += BISHOP_PAIR_BONUS;
+        }
+        if black_bishops.popcnt() >= 2 {
+            score -= BISHOP_PAIR_BONUS;
+        }
+
+        score
+    }
+
+    /// Evaluate rooks
+    fn evaluate_rooks(board: &Board) -> i16 {
+        let mut score = 0;
+
+        let white_rooks = board.pieces(Piece::Rook) & board.color_combined(Color::White);
+        let black_rooks = board.pieces(Piece::Rook) & board.color_combined(Color::Black);
+        let white_pawns = board.pieces(Piece::Pawn) & board.color_combined(Color::White);
+        let black_pawns = board.pieces(Piece::Pawn) & board.color_combined(Color::Black);
+
+        // White rooks on open/semi-open files
+        for square in white_rooks {
+            let file_mask = chess::get_file(square.get_file());
+            let has_white_pawns = (white_pawns & file_mask) != EMPTY;
+            let has_black_pawns = (black_pawns & file_mask) != EMPTY;
+
+            if !has_white_pawns && !has_black_pawns {
+                score += ROOK_OPEN_FILE_BONUS;
+            } else if !has_white_pawns {
+                score += ROOK_SEMI_OPEN_FILE_BONUS;
+            }
+        }
+
+        // Black rooks on open/semi-open files
+        for square in black_rooks {
+            let file_mask = chess::get_file(square.get_file());
+            let has_white_pawns = (white_pawns & file_mask) != EMPTY;
+            let has_black_pawns = (black_pawns & file_mask) != EMPTY;
+
+            if !has_white_pawns && !has_black_pawns {
+                score -= ROOK_OPEN_FILE_BONUS;
+            } else if !has_black_pawns {
+                score -= ROOK_SEMI_OPEN_FILE_BONUS;
+            }
+        }
+
+        score
+    }
+
+    /// Evaluate king safety in middlegame
+    fn evaluate_king_safety(board: &Board, phase: i16) -> i16 {
+        // Only relevant in middlegame
+        if phase > 180 {
+            return 0;
+        }
+
+        let mut score = 0;
+
+        let white_king = (board.pieces(Piece::King) & board.color_combined(Color::White)).to_square();
+        let black_king = (board.pieces(Piece::King) & board.color_combined(Color::Black)).to_square();
+        let white_pawns = board.pieces(Piece::Pawn) & board.color_combined(Color::White);
+        let black_pawns = board.pieces(Piece::Pawn) & board.color_combined(Color::Black);
+
+        // White king pawn shield
+        let white_shield_squares = chess::get_king_moves(white_king);
+        for sq in white_shield_squares {
+            if (white_pawns & BitBoard::from_square(sq)) != EMPTY {
+                score += KING_SAFETY_PAWN_SHIELD;
+            }
+        }
+
+        // Black king pawn shield
+        let black_shield_squares = chess::get_king_moves(black_king);
+        for sq in black_shield_squares {
+            if (black_pawns & BitBoard::from_square(sq)) != EMPTY {
+                score -= KING_SAFETY_PAWN_SHIELD;
+            }
+        }
+
+        // Scale by game phase (less important in endgame)
+        score * (256 - phase) / 256
+    }
+}
+
+impl EvaluateEngine for PstEval {
+    fn evaluate(state: &GameState) -> i16 {
+        if state.is_draw() {
+            return 0;
+        }
+
+        let board = state.last_board();
+        let status = board.status();
+
+        if status == BoardStatus::Checkmate {
+            return -MATE_VALUE + state.ply() as i16;
+        }
+
+        let phase = Self::game_phase(&board);
+
+        let mut score = 0;
+
+        // Material + PST evaluation
+        score += Self::evaluate_material_pst(&board, phase);
+
+        // Pawn structure
+        score += Self::evaluate_pawns(&board);
+
+        // Bishop evaluation
+        score += Self::evaluate_bishops(&board);
+
+        // Rook evaluation
+        score += Self::evaluate_rooks(&board);
+
+        // King safety
+        score += Self::evaluate_king_safety(&board, phase);
+
+        // Return from side to move perspective
+        if board.side_to_move() == Color::White {
+            score
+        } else {
+            -score
+        }
+    }
+}

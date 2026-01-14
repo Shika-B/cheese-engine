@@ -1,3 +1,7 @@
+mod pst;
+
+pub use pst::PstEval;
+
 use chess::{BoardStatus, Color, Piece};
 
 use crate::engine::{EvaluateEngine, GameState};
@@ -23,7 +27,7 @@ impl EvaluateEngine for CountMaterial {
         let status = board.status();
 
         if status == BoardStatus::Checkmate {
-            return -MATE_VALUE + state.num_moves as i16;
+            return -MATE_VALUE + state.ply() as i16;
         }
 
         let mut score = 0;
