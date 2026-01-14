@@ -108,6 +108,25 @@ impl StagedMoveIterator {
         self.good_captures_idx = 0;
     }
 
+    /// Check if a move is legal without panicking
+    /// This is safer than MoveGen::legal_quick for moves from other positions
+    fn is_move_legal(&self, mv: ChessMove) -> bool {
+        // Basic validation first
+        if self.board.piece_on(mv.get_source()).is_none() {
+            return false;
+        }
+
+        // For killer/counter moves, use the safer approach of checking
+        // if the move is in the legal move list
+        // This is slower but prevents panics from invalid moves
+        for legal_mv in MoveGen::new_legal(&self.board) {
+            if legal_mv == mv {
+                return true;
+            }
+        }
+        false
+    }
+
     /// Static exchange evaluation
     fn see_simple(&self, mv: ChessMove, threshold: i16) -> bool {
         const PIECE_VALUES: [i16; 6] = [100, 320, 330, 500, 900, 0];
@@ -138,7 +157,7 @@ impl StagedMoveIterator {
 
         // Get history scores (safe because we own the reference during iteration)
         let history_table = unsafe { &*self.history_table_ptr };
-
+ 
         for mv in &mut self.move_gen {
             // Get history score
             let from = mv.get_source().to_index();
@@ -164,7 +183,7 @@ impl Iterator for StagedMoveIterator {
                 MoveStage::TTMove => {
                     self.stage = MoveStage::GenerateCaptures;
                     if let Some(mv) = self.tt_move {
-                        if MoveGen::legal_quick(&self.board, mv) {
+                        if self.is_move_legal(mv) {
                             // Remove from move generator so it won't appear again
                             self.move_gen.remove_move(mv);
                             return Some(mv);
@@ -191,7 +210,7 @@ impl Iterator for StagedMoveIterator {
                     if let Some(mv) = self.killer_moves[0] {
                         // Check it's quiet and legal
                         if self.board.piece_on(mv.get_dest()).is_none()
-                            && MoveGen::legal_quick(&self.board, mv)
+                            && self.is_move_legal(mv)
                         {
                             // Remove from move generator so it won't appear again
                             self.move_gen.remove_move(mv);
@@ -205,8 +224,8 @@ impl Iterator for StagedMoveIterator {
                     if let Some(mv) = self.killer_moves[1] {
                         // Check it's quiet, legal, and different from killer1
                         if self.board.piece_on(mv.get_dest()).is_none()
-                            && MoveGen::legal_quick(&self.board, mv)
                             && Some(mv) != self.killer_moves[0]
+                            && self.is_move_legal(mv)
                         {
                             // Remove from move generator so it won't appear again
                             self.move_gen.remove_move(mv);
@@ -220,9 +239,9 @@ impl Iterator for StagedMoveIterator {
                     if let Some(mv) = self.counter_move {
                         // Check it's quiet, legal, and not a killer
                         if self.board.piece_on(mv.get_dest()).is_none()
-                            && MoveGen::legal_quick(&self.board, mv)
                             && Some(mv) != self.killer_moves[0]
                             && Some(mv) != self.killer_moves[1]
+                            && self.is_move_legal(mv)
                         {
                             // Remove from move generator so it won't appear again
                             self.move_gen.remove_move(mv);

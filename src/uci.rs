@@ -1,9 +1,13 @@
 use crate::engine::{EvaluateEngine, GameState, SearchEngine, TimeInfo};
 
-use chess::{ChessMove, Piece, Square};
-use vampirc_uci::{UciMessage, UciMove, UciPiece, UciSquare, UciTimeControl, parse_one};
+use chess::{Board, ChessMove, Piece, Square};
+use log::{debug, error};
+use vampirc_uci::{UciFen, UciMessage, UciMove, UciPiece, UciSquare, UciTimeControl, parse_one};
 
-use std::io::{self, BufRead};
+use std::{
+    io::{self, BufRead},
+    str::FromStr,
+};
 
 pub fn uci_loop<E: EvaluateEngine, S: SearchEngine<E>>(engine: &mut S) -> () {
     let stdin = io::stdin();
@@ -27,16 +31,22 @@ pub fn uci_loop<E: EvaluateEngine, S: SearchEngine<E>>(engine: &mut S) -> () {
 
             UciMessage::Position {
                 startpos,
-                fen: _,
+                fen,
                 moves,
             } => {
-                if !startpos {
-                    // TODO: Implement FEN string parsing.
-                    log::error!("Does not handle FEN string parsing yet");
-                    unimplemented!("Does not handle FEN string parsing yet")
-                }
-                game_state = GameState::default();
+                // Clear engine search state when setting a new position
+                engine.clear_search_state();
 
+                if let Some(UciFen(fen_str)) = fen {
+                    let board = Board::from_str(&fen_str).expect("Failed to build board from FEN");
+                    game_state = GameState::from_board(board);
+                } else if startpos {
+                    game_state = GameState::default();
+                } else {
+                    error!("Position command with neither FEN nor startpos!");
+                }
+
+                // Apply moves regardless of whether we started from FEN or startpos
                 for mv in moves {
                     let chess_mv = from_uci_move(mv);
                     game_state.make_move(chess_mv);

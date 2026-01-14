@@ -1,0 +1,137 @@
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "1"]
+[White "Engine1"]
+[Black "Engine2"]
+[Result "1/2-1/2"]
+[FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"]
+[GameDuration "00:00:25"]
+[GameEndTime "2026-01-14T13:51:40.185 CET"]
+[GameStartTime "2026-01-14T13:51:14.702 CET"]
+[PlyCount "133"]
+[SetUp "1"]
+[TimeControl "3+0.03"]
+
+1. Nc3 Nf6 2. Nf3 Nc6 3. e3 e6 4. Bb5 Bd6 5. Bxc6 dxc6 6. Ng5 Be5 7. O-O O-O
+8. Nce4 Nxe4 9. Nxe4 Bxh2+ 10. Kxh2 Qh4+ 11. Kg1 Qxe4 12. Kh2 Qh4+ 13. Kg1 Rd8
+14. c3 Rd5 15. Qb3 Rh5 16. f3 Rb5 17. Qc2 Bd7 18. Rf2 Rd8 19. e4 Ra5 20. Kf1 Qe7
+21. Ke2 Qc5 22. Qd3 Rb5 23. Qe3 Qc4+ 24. Qd3 Qc5 25. Qe3 Qc4+ 26. Qd3 Qxd3+
+27. Kxd3 Kf8 28. Rf1 Rh5 29. Kc4 Ke7 30. Rf2 Rh1 31. d3 Ke8 32. Kd4 Bc8+ 33. Ke3
+Kd7 34. Kd4 Kd6 35. e5+ Ke7+ 36. Kc4 Ke8 37. Rd2 Re1 38. d4 Rd7 39. Rb1 Rd5
+40. Ra1 c5 41. Rc2 cxd4 42. cxd4 Bd7 43. Kb3 Bc6 44. Kc3 Kd7 45. Rd2 Bb5 46. Rb1
+Re3+ 47. Kc2 Kc6 48. b3 Rd7 49. Bb2 Rd8 50. Rc1 Rd7 51. Kd1+ Kb6 52. d5 Rd3
+53. d6 cxd6 54. Rxd3 Bxd3 55. exd6 Rxd6 56. Ke1 f6 57. Kf2 Bf5 58. Ke3 Rd3+
+59. Ke2 Rd7 60. Bc3 Kb5 61. Bb2 Bg6 62. Bc3 Rd3 63. Bd2 Rd7 64. Ke3 Rd3+ 65. Ke2
+Rd7 66. Ke3 Rd3+ 67. Ke2 {Draw by 3-fold repetition} 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "1"]
+[White "Engine1"]
+[Black "Engine2"]
+[Result "1/2-1/2"]
+[FEN "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 1"]
+[GameDuration "00:00:08"]
+[GameEndTime "2026-01-14T13:51:53.950 CET"]
+[GameStartTime "2026-01-14T13:51:45.680 CET"]
+[PlyCount "30"]
+[SetUp "1"]
+[TimeControl "3+0.03"]
+
+1. Nc3 h6 {0.68s} 2. O-O Bd6 3. Re1 O-O 4. Re2 Na5 5. Bd3 Nh5 6. Bb5 Nf4 7. Re1
+Ne6 8. Bd3 Nc6 9. Nb5 Bc5 10. Nc3 Nf4 11. Bc4 Bd6 12. Nb5 Bb4 13. Nc3 Bd6
+14. Nb5 Bb4 15. Nc3 Bd6 {Draw by 3-fold repetition} 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "1"]
+[White "Engine1"]
+[Black "Engine2"]
+[Result "0-1"]
+[FEN "rnbqkb1r/ppp2ppp/4pn2/3p4/2PP4/2N2N2/PP2PPPP/R1BQKB1R w KQkq - 0 1"]
+[GameDuration "00:00:10"]
+[GameEndTime "2026-01-14T13:52:09.578 CET"]
+[GameStartTime "2026-01-14T13:51:59.518 CET"]
+[PlyCount "44"]
+[SetUp "1"]
+[TimeControl "3+0.03"]
+
+1. Ne5 Nbd7 2. Bg5 Be7 3. Qa4 O-O 4. Nxd7 Bxd7 5. Qb3 dxc4 6. Qxb7 Rb8 7. Qxa7
+Rxb2 8. Bc1 Rb6 9. Ba3 Bc6 10. Bxe7 Qxe7 11. Qa5 Nd5 12. Qc5 Qxc5 13. dxc5 Rb7
+14. Kd2 Rb2+ 15. Kc1 Rfb8 16. Nd1 c3 17. e4 Ba4 18. Ne3 Nxe3 19. Bd3 Nc2 20. Rd1
+Nxa1 21. Rf1 Bc2 22. f3 Rb1# {Black mates} 0-1
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "1"]
+[White "Engine1"]
+[Black "Engine2"]
+[Result "1/2-1/2"]
+[FEN "8/8/8/4k3/8/8/4K3/8 w - - 0 1"]
+[GameDuration "00:00:00"]
+[GameEndTime "2026-01-14T13:52:14.848 CET"]
+[GameStartTime "2026-01-14T13:52:14.683 CET"]
+[PlyCount "1"]
+[SetUp "1"]
+[TimeControl "3+0.03"]
+
+1. Kd3 {Draw by insufficient mating material} 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "1"]
+[White "Engine1"]
+[Black "Engine2"]
+[Result "1/2-1/2"]
+[FEN "8/8/4k3/8/8/4K3/8/7R w - - 0 1"]
+[GameDuration "00:00:02"]
+[GameEndTime "2026-01-14T13:52:23.189 CET"]
+[GameStartTime "2026-01-14T13:52:20.463 CET"]
+[PlyCount "19"]
+[SetUp "1"]
+[TimeControl "3+0.03"]
+
+1. Ke4 Kd6 2. Rh6+ Kc5 3. Re6 Kc4 4. Rc6+ Kb4 5. Kd5 Kb3 6. Kd4 Kb2 7. Re6 Kb3
+8. Rc6 Kb2 9. Re6 Kb3 10. Rc6 {Draw by 3-fold repetition} 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "1"]
+[White "Engine1"]
+[Black "Engine2"]
+[Result "1-0"]
+[FEN "8/8/8/3k4/3P4/3K4/8/8 w - - 0 1"]
+[GameDuration "00:00:03"]
+[GameEndTime "2026-01-14T13:52:32.647 CET"]
+[GameStartTime "2026-01-14T13:52:28.684 CET"]
+[PlyCount "29"]
+[SetUp "1"]
+[TimeControl "3+0.03"]
+
+1. Ke3 Kc6 2. Ke4 Kd6 3. d5 Kc5 4. Ke5 Kb6 5. d6 Kc6 6. Ke6 Kb7 7. d7 Kc7 8. Ke7
+Kc6 9. d8=Q Kc5 10. Qd3 Kc6 11. Qc4+ Kb6 12. Kd6 Ka5 13. Qb3 Ka6 14. Kc6 Ka5
+15. Qa3# {White mates} 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "1"]
+[White "Engine1"]
+[Black "Engine2"]
+[Result "1-0"]
+[FEN "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5Q2/PPPP1PPP/RNB1K1NR w KQkq - 0 1"]
+[GameDuration "00:00:00"]
+[GameEndTime "2026-01-14T13:52:37.923 CET"]
+[GameStartTime "2026-01-14T13:52:37.717 CET"]
+[PlyCount "1"]
+[SetUp "1"]
+[TimeControl "3+0.03"]
+
+1. Qxf7# {White mates} 1-0
+

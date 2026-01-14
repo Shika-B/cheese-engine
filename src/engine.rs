@@ -10,6 +10,10 @@ impl<T: EvaluateEngine> SearchEngine<T> for AnyMove {
     fn next_move(&mut self, state: GameState, _time_info: &Option<TimeInfo>) -> Option<ChessMove> {
         MoveGen::new_legal(&state.last_board()).next()
     }
+
+    fn clear_search_state(&mut self) {
+        // AnyMove has no state to clear
+    }
 }
 
 pub trait EvaluateEngine {
@@ -22,6 +26,9 @@ pub trait SearchEngine<T: EvaluateEngine> {
     /// Returns an Option because it can technically fail to find a reasonable move.
     /// Default implementation returns the first available legal move
     fn next_move(&mut self, state: GameState, time_info: &Option<TimeInfo>) -> Option<ChessMove>;
+
+    /// Clear search state (killer moves, history, etc.) when setting a new position
+    fn clear_search_state(&mut self);
 
     /// Used to keep searching moves on opponents time.
     /// Default implementation does nothing, and it may be left as is.
@@ -47,13 +54,19 @@ pub struct GameState {
 }
 
 impl GameState {
+    pub fn from_board(board: Board) -> Self {
+        let mut s = Self::default();
+        s.board = board;
+        s
+    }
+
     #[inline(always)]
     pub fn last_board(&self) -> Board {
         self.board
     }
 
     #[inline]
-    pub fn make_move(&mut self, mv: ChessMove) {
+    pub fn make_move(&mut self, mv: ChessMove) -> u8 {
         // Store undo info
         let undo_info = UndoInfo {
             mv,
@@ -66,7 +79,9 @@ impl GameState {
 
         // Update repetition tracking
         let hash = self.board.get_hash();
-        *self.seen_positions.entry(hash).or_insert(0) += 1;
+        let entry = self.seen_positions.entry(hash).or_insert(0);
+        *entry += 1;
+        *entry
     }
 
     #[inline]
@@ -86,19 +101,7 @@ impl GameState {
     #[inline]
     pub fn is_draw(&self) -> bool {
         // Check stalemate
-        if self.board.status() == BoardStatus::Stalemate {
-            return true;
-        }
-
-        // Check threefold repetition
-        let current_hash = self.board.get_hash();
-        if let Some(&count) = self.seen_positions.get(&current_hash) {
-            if count >= 3 {
-                return true;
-            }
-        }
-
-        false
+        self.board.status() == BoardStatus::Stalemate
     }
 
     /// Get the current ply count (for mate distance calculation)

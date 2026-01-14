@@ -13,7 +13,7 @@ const TRANSPOTION_TABLE_SIZE: usize = 16_777_216; // 16_777_216 = 2^24
 
 const MATE_THRESHOLD: i16 = 29_000;
 
-const MAX_DEPTH: u16 = 8;
+const MAX_DEPTH: u16 = 4;
 const MAX_PLY: usize = 128;
 
 #[derive(Debug, PartialEq, Copy, Clone)]
@@ -85,7 +85,6 @@ impl<E: EvaluateEngine> SearchEngine<E> for Negamax {
         }
 
         for curr_depth in start_depth..=MAX_DEPTH {
-            log::debug!("DEPTH {}", curr_depth);
             let mut window = 32;
             let mut alpha_orig = last_score - window;
             let mut beta = last_score + window;
@@ -104,8 +103,13 @@ impl<E: EvaluateEngine> SearchEngine<E> for Negamax {
                 let mut alpha = alpha_orig;
 
                 for mv in mv_iter {
-                    state.make_move(mv);
-                    let score = -self.search_eval::<E>(&mut state, -beta, -alpha, curr_depth - 1, 1);
+                    let repetition_count = state.make_move(mv);
+                    let score = if repetition_count >= 3 {
+                        0
+                    } else {
+                        -self.search_eval::<E>(&mut state, -beta, -alpha, curr_depth - 1, 1)
+                    };
+
                     state.undo_last_move();
 
                     if score > best_score {
@@ -123,14 +127,6 @@ impl<E: EvaluateEngine> SearchEngine<E> for Negamax {
                     beta = beta.saturating_add(window);
                 } else {
                     last_score = best_score;
-                    log::info!(
-                        "Final alpha {}, beta {}, window {}, score {} and mv {:?}",
-                        alpha_orig,
-                        beta,
-                        window,
-                        best_score,
-                        best_move.map(|x| x.to_string())
-                    );
                     break;
                 }
                 window *= 2;
@@ -144,8 +140,18 @@ impl<E: EvaluateEngine> SearchEngine<E> for Negamax {
             elapsed.as_millis(),
             (self.nodes_explored as f64 / elapsed.as_secs_f64()).round()
         );
+        log::info!("Best score: {}", last_score);
 
         best_move
+    }
+
+    fn clear_search_state(&mut self) {
+        self.killer_moves = [[None; 2]; MAX_PLY];
+        self.counter_moves = [None; 64];
+        self.history_table = [[0; 64]; 64];
+        self.history_move_count = 0;
+        // Clear TT to avoid using moves from previous positions
+        self.transposition_table = vec![SearchResult::default(); TRANSPOTION_TABLE_SIZE];
     }
 }
 
@@ -160,6 +166,7 @@ impl Negamax {
             history_move_count: 0,
         }
     }
+
     fn get_tt_entry(&self, hash: u64) -> Option<SearchResult> {
         let transpo_idx = (hash as usize) & (TRANSPOTION_TABLE_SIZE - 1);
 
@@ -237,15 +244,19 @@ impl Negamax {
         let mut move_count = 0;
 
         for mv in mv_iter {
-            state.make_move(mv);
+            let repetition_count = state.make_move(mv);
+
             move_count += 1;
 
-            let score = if move_count == 1 {
+            let score = if repetition_count >= 3 {
+                0
+            } else if move_count == 1 {
                 // First move: full window (PV node)
                 -self.search_eval::<E>(state, -beta, -alpha, depth - 1, ply + 1)
             } else {
                 // Null window search
-                let mut score = -self.search_eval::<E>(state, -alpha - 1, -alpha, depth - 1, ply + 1);
+                let mut score =
+                    -self.search_eval::<E>(state, -alpha - 1, -alpha, depth - 1, ply + 1);
 
                 // Re-search if it beat alpha
                 if score > alpha && score < beta {
@@ -329,8 +340,12 @@ impl Negamax {
                 continue;
             }
 
-            state.make_move(mv);
-            let score = -self.quiescence::<E>(state, -beta, -alpha, ply + 1);
+            let repetition_count = state.make_move(mv);
+            let score = if repetition_count >= 3 {
+                0
+            } else {
+                -self.quiescence::<E>(state, -beta, -alpha, ply + 1)
+            };
             state.undo_last_move();
 
             if score >= beta {
