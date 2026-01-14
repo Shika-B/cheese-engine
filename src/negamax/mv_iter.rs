@@ -4,31 +4,23 @@ pub struct StagedMoveIterator {
     board: Board,
     stage: MoveStage,
 
-    // Phase 1: TT move
-    tt_move: Option<ChessMove>,
-    tt_move_yielded: bool,
+    move_gen: MoveGen,
 
-    // Phase 2: Good captures (MVV-LVV sorted, SEE >= 0)
+    tt_move: Option<ChessMove>,
+
     good_captures: Vec<ChessMove>,
     good_captures_idx: usize,
 
-    // Phase 3-4: Killer moves
     killer_moves: [Option<ChessMove>; 2],
-    killer_idx: usize,
 
-    // Phase 5: Counter move
     counter_move: Option<ChessMove>,
-    counter_yielded: bool,
 
-    // Phase 6: Quiet moves (history sorted)
     quiet_moves: Vec<(ChessMove, i32)>,
     quiet_idx: usize,
 
-    // Phase 7: Bad captures (SEE < 0)
     bad_captures: Vec<ChessMove>,
     bad_captures_idx: usize,
 
-    // Reference to history table (raw pointer for efficiency)
     history_table_ptr: *const [[i32; 64]; 64],
 }
 
@@ -54,17 +46,16 @@ impl StagedMoveIterator {
         counter_move: Option<ChessMove>,
         history_table: &[[i32; 64]; 64],
     ) -> Self {
+        let move_gen = MoveGen::new_legal(&board);
         Self {
             board,
             stage: MoveStage::TTMove,
+            move_gen,
             tt_move,
-            tt_move_yielded: false,
             good_captures: Vec::with_capacity(32),
             good_captures_idx: 0,
             killer_moves: *killer_moves,
-            killer_idx: 0,
             counter_move,
-            counter_yielded: false,
             quiet_moves: Vec::with_capacity(64),
             quiet_idx: 0,
             bad_captures: Vec::with_capacity(32),
@@ -74,7 +65,8 @@ impl StagedMoveIterator {
     }
 
     fn mvv_lvv_score(mv: ChessMove, board: &Board) -> i16 {
-        const PIECE_VALUES: [i16; 6] = [100, 320, 330, 500, 900, 0]; // P, N, B, R, Q, K
+        // P, N, B, R, Q, K
+        const PIECE_VALUES: [i16; 6] = [100, 320, 330, 500, 900, 0];
 
         let victim = board.piece_on(mv.get_dest());
         let attacker = board.piece_on(mv.get_source());
@@ -95,28 +87,29 @@ impl StagedMoveIterator {
         self.good_captures.clear();
         self.bad_captures.clear();
 
-        // Generate all captures
-        let captures = MoveGen::new_legal(&self.board);
+        self.move_gen.set_iterator_mask(*self.board.combined());
 
+        // Collect all capture moves first
+        let captures: Vec<ChessMove> = (&mut self.move_gen).collect();
+
+        // Now classify them using SEE
         for mv in captures {
-            // Check if it's a capture
-            if let Some(_) = self.board.piece_on(mv.get_dest()) {
-                // Use simplified SEE to separate good/bad captures
-                if self.see_simple(mv, 0) {
-                    self.good_captures.push(mv);
-                } else {
-                    self.bad_captures.push(mv);
-                }
+            // Use simplified SEE to separate good/bad captures
+            if self.see_simple(mv, 0) {
+                self.good_captures.push(mv);
+            } else {
+                self.bad_captures.push(mv);
             }
         }
 
         // Sort good captures by MVV-LVV descending
-        self.good_captures.sort_unstable_by_key(|&mv| -Self::mvv_lvv_score(mv, &self.board));
+        self.good_captures
+            .sort_unstable_by_key(|&mv| -Self::mvv_lvv_score(mv, &self.board));
         self.good_captures_idx = 0;
     }
 
+    /// Static exchange evaluation
     fn see_simple(&self, mv: ChessMove, threshold: i16) -> bool {
-        // Simplified SEE for move ordering
         const PIECE_VALUES: [i16; 6] = [100, 320, 330, 500, 900, 0];
 
         let victim = self.board.piece_on(mv.get_dest());
@@ -140,27 +133,13 @@ impl StagedMoveIterator {
     fn generate_quiet(&mut self) {
         self.quiet_moves.clear();
 
-        // Generate all legal moves
-        let all_moves = MoveGen::new_legal(&self.board);
+        // Set mask to exclude captures (use NOT of combined pieces)
+        self.move_gen.set_iterator_mask(!*self.board.combined());
 
         // Get history scores (safe because we own the reference during iteration)
         let history_table = unsafe { &*self.history_table_ptr };
 
-        for mv in all_moves {
-            // Skip captures (already processed)
-            if self.board.piece_on(mv.get_dest()).is_some() {
-                continue;
-            }
-
-            // Skip moves already yielded (tt_move, killers, counter)
-            if Some(mv) == self.tt_move
-                || Some(mv) == self.killer_moves[0]
-                || Some(mv) == self.killer_moves[1]
-                || Some(mv) == self.counter_move
-            {
-                continue;
-            }
-
+        for mv in &mut self.move_gen {
             // Get history score
             let from = mv.get_source().to_index();
             let to = mv.get_dest().to_index();
@@ -174,10 +153,6 @@ impl StagedMoveIterator {
         self.quiet_idx = 0;
     }
 
-    fn is_legal(&self, mv: ChessMove) -> bool {
-        // Quick legality check - ensure the move is actually legal for this position
-        MoveGen::new_legal(&self.board).any(|legal_mv| legal_mv == mv)
-    }
 }
 
 impl Iterator for StagedMoveIterator {
@@ -189,8 +164,9 @@ impl Iterator for StagedMoveIterator {
                 MoveStage::TTMove => {
                     self.stage = MoveStage::GenerateCaptures;
                     if let Some(mv) = self.tt_move {
-                        if self.is_legal(mv) {
-                            self.tt_move_yielded = true;
+                        if MoveGen::legal_quick(&self.board, mv) {
+                            // Remove from move generator so it won't appear again
+                            self.move_gen.remove_move(mv);
                             return Some(mv);
                         }
                     }
@@ -202,15 +178,9 @@ impl Iterator for StagedMoveIterator {
                 }
 
                 MoveStage::GoodCaptures => {
-                    while self.good_captures_idx < self.good_captures.len() {
+                    if self.good_captures_idx < self.good_captures.len() {
                         let mv = self.good_captures[self.good_captures_idx];
                         self.good_captures_idx += 1;
-
-                        // Skip if this is the TT move (already yielded)
-                        if self.tt_move_yielded && Some(mv) == self.tt_move {
-                            continue;
-                        }
-
                         return Some(mv);
                     }
                     self.stage = MoveStage::Killer1;
@@ -219,11 +189,12 @@ impl Iterator for StagedMoveIterator {
                 MoveStage::Killer1 => {
                     self.stage = MoveStage::Killer2;
                     if let Some(mv) = self.killer_moves[0] {
-                        // Check it's quiet, legal, and not the TT move
+                        // Check it's quiet and legal
                         if self.board.piece_on(mv.get_dest()).is_none()
-                            && self.is_legal(mv)
-                            && !(self.tt_move_yielded && Some(mv) == self.tt_move)
+                            && MoveGen::legal_quick(&self.board, mv)
                         {
+                            // Remove from move generator so it won't appear again
+                            self.move_gen.remove_move(mv);
                             return Some(mv);
                         }
                     }
@@ -232,12 +203,13 @@ impl Iterator for StagedMoveIterator {
                 MoveStage::Killer2 => {
                     self.stage = MoveStage::CounterMove;
                     if let Some(mv) = self.killer_moves[1] {
-                        // Check it's quiet, legal, different from killer1, and not the TT move
+                        // Check it's quiet, legal, and different from killer1
                         if self.board.piece_on(mv.get_dest()).is_none()
-                            && self.is_legal(mv)
+                            && MoveGen::legal_quick(&self.board, mv)
                             && Some(mv) != self.killer_moves[0]
-                            && !(self.tt_move_yielded && Some(mv) == self.tt_move)
                         {
+                            // Remove from move generator so it won't appear again
+                            self.move_gen.remove_move(mv);
                             return Some(mv);
                         }
                     }
@@ -246,14 +218,14 @@ impl Iterator for StagedMoveIterator {
                 MoveStage::CounterMove => {
                     self.stage = MoveStage::GenerateQuiet;
                     if let Some(mv) = self.counter_move {
-                        // Check it's quiet, legal, not a killer, and not the TT move
+                        // Check it's quiet, legal, and not a killer
                         if self.board.piece_on(mv.get_dest()).is_none()
-                            && self.is_legal(mv)
+                            && MoveGen::legal_quick(&self.board, mv)
                             && Some(mv) != self.killer_moves[0]
                             && Some(mv) != self.killer_moves[1]
-                            && !(self.tt_move_yielded && Some(mv) == self.tt_move)
                         {
-                            self.counter_yielded = true;
+                            // Remove from move generator so it won't appear again
+                            self.move_gen.remove_move(mv);
                             return Some(mv);
                         }
                     }
@@ -274,15 +246,9 @@ impl Iterator for StagedMoveIterator {
                 }
 
                 MoveStage::BadCaptures => {
-                    while self.bad_captures_idx < self.bad_captures.len() {
+                    if self.bad_captures_idx < self.bad_captures.len() {
                         let mv = self.bad_captures[self.bad_captures_idx];
                         self.bad_captures_idx += 1;
-
-                        // Skip if this is the TT move (already yielded)
-                        if self.tt_move_yielded && Some(mv) == self.tt_move {
-                            continue;
-                        }
-
                         return Some(mv);
                     }
                     self.stage = MoveStage::Done;

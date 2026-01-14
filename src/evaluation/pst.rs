@@ -1,3 +1,5 @@
+// TODO: Make the code less repetitive.
+
 use chess::{Board, BoardStatus, Color, Piece, Square, BitBoard, File, EMPTY};
 
 use crate::engine::{EvaluateEngine, GameState};
@@ -11,7 +13,6 @@ const BISHOP_VALUE: i16 = 330;
 const ROOK_VALUE: i16 = 500;
 const QUEEN_VALUE: i16 = 900;
 
-// Bonus values
 const BISHOP_PAIR_BONUS: i16 = 50;
 const ROOK_OPEN_FILE_BONUS: i16 = 25;
 const ROOK_SEMI_OPEN_FILE_BONUS: i16 = 15;
@@ -22,6 +23,7 @@ const KING_SAFETY_PAWN_SHIELD: i16 = 10;
 
 // Piece-Square Tables (White's perspective, flipped for Black)
 // Values are from White's perspective (rank 0 = 1st rank for White)
+// Both midgame and endgame tables are here.
 
 const PAWN_PST_MG: [i16; 64] = [
       0,   0,   0,   0,   0,   0,   0,   0,
@@ -205,7 +207,6 @@ impl PstEval {
         let white = board.color_combined(Color::White);
         let black = board.color_combined(Color::Black);
 
-        // Pawns
         let pawns = board.pieces(Piece::Pawn);
         for square in pawns & white {
             score += PAWN_VALUE + Self::pst_value(Piece::Pawn, square, Color::White, &PAWN_PST_MG, &PAWN_PST_EG, phase);
@@ -214,7 +215,6 @@ impl PstEval {
             score -= PAWN_VALUE + Self::pst_value(Piece::Pawn, square, Color::Black, &PAWN_PST_MG, &PAWN_PST_EG, phase);
         }
 
-        // Knights
         let knights = board.pieces(Piece::Knight);
         for square in knights & white {
             score += KNIGHT_VALUE + Self::pst_value(Piece::Knight, square, Color::White, &KNIGHT_PST_MG, &KNIGHT_PST_EG, phase);
@@ -223,7 +223,6 @@ impl PstEval {
             score -= KNIGHT_VALUE + Self::pst_value(Piece::Knight, square, Color::Black, &KNIGHT_PST_MG, &KNIGHT_PST_EG, phase);
         }
 
-        // Bishops
         let bishops = board.pieces(Piece::Bishop);
         for square in bishops & white {
             score += BISHOP_VALUE + Self::pst_value(Piece::Bishop, square, Color::White, &BISHOP_PST_MG, &BISHOP_PST_EG, phase);
@@ -232,7 +231,6 @@ impl PstEval {
             score -= BISHOP_VALUE + Self::pst_value(Piece::Bishop, square, Color::Black, &BISHOP_PST_MG, &BISHOP_PST_EG, phase);
         }
 
-        // Rooks
         let rooks = board.pieces(Piece::Rook);
         for square in rooks & white {
             score += ROOK_VALUE + Self::pst_value(Piece::Rook, square, Color::White, &ROOK_PST_MG, &ROOK_PST_EG, phase);
@@ -241,7 +239,6 @@ impl PstEval {
             score -= ROOK_VALUE + Self::pst_value(Piece::Rook, square, Color::Black, &ROOK_PST_MG, &ROOK_PST_EG, phase);
         }
 
-        // Queens
         let queens = board.pieces(Piece::Queen);
         for square in queens & white {
             score += QUEEN_VALUE + Self::pst_value(Piece::Queen, square, Color::White, &QUEEN_PST_MG, &QUEEN_PST_EG, phase);
@@ -260,7 +257,7 @@ impl PstEval {
         score
     }
 
-    /// Check if a pawn is passed (no enemy pawns in front or on adjacent files)
+    /// passed pawn: no enemy pawns in front or on adjacent files)
     #[inline]
     fn is_passed_pawn(square: Square, color: Color, board: &Board) -> bool {
         let file = square.get_file().to_index();
@@ -268,7 +265,7 @@ impl PstEval {
 
         let enemy_pawns = board.pieces(Piece::Pawn) & board.color_combined(!color);
 
-        // Define the mask for blocking pawns
+        // mask for blocking pawns
         let blocking_files = if file == 0 {
             0b01100000_01100000_01100000_01100000_01100000_01100000_01100000_01100000u64
         } else if file == 7 {
@@ -301,7 +298,6 @@ impl PstEval {
         let white_pawns = board.pieces(Piece::Pawn) & board.color_combined(Color::White);
         let black_pawns = board.pieces(Piece::Pawn) & board.color_combined(Color::Black);
 
-        // White pawns
         for square in white_pawns {
             let file = square.get_file().to_index();
             let rank = square.get_rank().to_index();
@@ -331,7 +327,6 @@ impl PstEval {
             }
         }
 
-        // Black pawns
         for square in black_pawns {
             let file = square.get_file().to_index();
             let rank = square.get_rank().to_index();
@@ -364,7 +359,6 @@ impl PstEval {
         score
     }
 
-    /// Evaluate bishops
     fn evaluate_bishops(board: &Board) -> i16 {
         let mut score = 0;
 
@@ -382,7 +376,6 @@ impl PstEval {
         score
     }
 
-    /// Evaluate rooks
     fn evaluate_rooks(board: &Board) -> i16 {
         let mut score = 0;
 

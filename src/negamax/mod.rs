@@ -12,7 +12,6 @@ use crate::{
 const TRANSPOTION_TABLE_SIZE: usize = 16_777_216; // 16_777_216 = 2^24
 
 const MATE_THRESHOLD: i16 = 29_000;
-const MATE_VALUE: i16 = 30_000;
 
 const MAX_DEPTH: u16 = 8;
 const MAX_PLY: usize = 128;
