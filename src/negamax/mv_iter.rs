@@ -71,16 +71,25 @@ impl StagedMoveIterator {
         let victim = board.piece_on(mv.get_dest());
         let attacker = board.piece_on(mv.get_source());
 
-        if let Some(victim_piece) = victim {
+        let mut score = if let Some(victim_piece) = victim {
             let victim_value = PIECE_VALUES[victim_piece.to_index()];
             let attacker_value = if let Some(attacker_piece) = attacker {
                 PIECE_VALUES[attacker_piece.to_index()]
             } else {
                 0
             };
-            return victim_value * 16 - attacker_value;
+            victim_value * 16 - attacker_value
+        } else {
+            0
+        };
+
+        // Add promotion bonus (promotion piece value - pawn value)
+        if let Some(promotion) = mv.get_promotion() {
+            let promotion_value = PIECE_VALUES[promotion.to_index()];
+            score += promotion_value - PIECE_VALUES[0]; // promotion_value - PAWN_VALUE
         }
-        0
+
+        score
     }
 
     fn generate_captures(&mut self) {
@@ -157,18 +166,53 @@ impl StagedMoveIterator {
 
         // Get history scores (safe because we own the reference during iteration)
         let history_table = unsafe { &*self.history_table_ptr };
- 
+
+        // Detect simple endgame
+        let total_pieces = self.board.combined().popcnt();
+        let is_simple_endgame = total_pieces <= 4;
+
         for mv in &mut self.move_gen {
             // Get history score
             let from = mv.get_source().to_index();
             let to = mv.get_dest().to_index();
-            let history_score = history_table[from][to];
+            let mut history_score = history_table[from][to];
+
+            // In simple endgames, boost King moves and checks
+            if is_simple_endgame {
+                let piece = self.board.piece_on(mv.get_source());
+
+                // Boost King moves significantly
+                if piece == Some(chess::Piece::King) {
+                    history_score += 100_000;
+                }
+
+                // Boost checks
+                let new_board = self.board.make_move_new(mv);
+                if new_board.checkers().popcnt() > 0 {
+                    history_score += 50_000;
+                }
+            }
 
             self.quiet_moves.push((mv, history_score));
         }
 
-        // Sort by history score descending
-        self.quiet_moves.sort_unstable_by_key(|(_, score)| -score);
+        // Sort by custom key: promotions first (Queen > Rook > Bishop > Knight), then history score
+        self.quiet_moves.sort_unstable_by_key(|(mv, score)| {
+            let promotion_bonus = if let Some(promo) = mv.get_promotion() {
+                // Queen=4, Rook=3, Bishop=2, Knight=1 -> higher is better
+                // Negate because sort is ascending, we want descending
+                match promo {
+                    chess::Piece::Queen => -1_000_000,
+                    chess::Piece::Rook => -900_000,
+                    chess::Piece::Bishop => -800_000,
+                    chess::Piece::Knight => -700_000,
+                    _ => 0,
+                }
+            } else {
+                0
+            };
+            promotion_bonus - score  // Promotions first, then by history score
+        });
         self.quiet_idx = 0;
     }
 

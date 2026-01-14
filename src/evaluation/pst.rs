@@ -21,6 +21,13 @@ const DOUBLED_PAWN_PENALTY: i16 = -15;
 const ISOLATED_PAWN_PENALTY: i16 = -20;
 const KING_SAFETY_PAWN_SHIELD: i16 = 10;
 
+// Endgame evaluation tuning constants
+const KING_PROXIMITY_BONUS_PER_SQUARE: i16 = 10;  // Bonus for attacking King being close to enemy King
+const EDGE_RESTRICTION_BONUS_PER_SQUARE: i16 = 30; // Bonus for enemy King being near edge
+const MOBILITY_RESTRICTION_BONUS_PER_SQUARE: i16 = 5; // Bonus per restricted King move
+const ENDGAME_ACTIVATION_PHASE: i16 = 200;  // Phase threshold for endgame bonuses
+const PURE_ENDGAME_PHASE: i16 = 210;  // Phase threshold for mate progress bonus (lowered to capture Q+K vs K)
+
 // Piece-Square Tables (White's perspective, flipped for Black)
 // Values are from White's perspective (rank 0 = 1st rank for White)
 // Both midgame and endgame tables are here.
@@ -157,6 +164,12 @@ const KING_PST_EG: [i16; 64] = [
     -50, -30, -30, -30, -30, -30, -30, -50,
 ];
 
+/// Helper struct to avoid repeated mating material calculations
+struct EndgameContext {
+    white_winning: bool,  // White has mating material and Black has no defense
+    black_winning: bool,  // Black has mating material and White has no defense
+}
+
 pub struct PstEval;
 
 impl PstEval {
@@ -189,7 +202,7 @@ impl PstEval {
 
     /// Get piece-square table value for a piece on a square
     #[inline]
-    fn pst_value(_piece: Piece, square: Square, color: Color, mg_table: &[i16; 64], eg_table: &[i16; 64], phase: i16) -> i16 {
+    fn pst_value(square: Square, color: Color, mg_table: &[i16; 64], eg_table: &[i16; 64], phase: i16) -> i16 {
         let idx = if color == Color::White {
             square.to_index()
         } else {
@@ -209,50 +222,50 @@ impl PstEval {
 
         let pawns = board.pieces(Piece::Pawn);
         for square in pawns & white {
-            score += PAWN_VALUE + Self::pst_value(Piece::Pawn, square, Color::White, &PAWN_PST_MG, &PAWN_PST_EG, phase);
+            score += PAWN_VALUE + Self::pst_value(square, Color::White, &PAWN_PST_MG, &PAWN_PST_EG, phase);
         }
         for square in pawns & black {
-            score -= PAWN_VALUE + Self::pst_value(Piece::Pawn, square, Color::Black, &PAWN_PST_MG, &PAWN_PST_EG, phase);
+            score -= PAWN_VALUE + Self::pst_value(square, Color::Black, &PAWN_PST_MG, &PAWN_PST_EG, phase);
         }
 
         let knights = board.pieces(Piece::Knight);
         for square in knights & white {
-            score += KNIGHT_VALUE + Self::pst_value(Piece::Knight, square, Color::White, &KNIGHT_PST_MG, &KNIGHT_PST_EG, phase);
+            score += KNIGHT_VALUE + Self::pst_value(square, Color::White, &KNIGHT_PST_MG, &KNIGHT_PST_EG, phase);
         }
         for square in knights & black {
-            score -= KNIGHT_VALUE + Self::pst_value(Piece::Knight, square, Color::Black, &KNIGHT_PST_MG, &KNIGHT_PST_EG, phase);
+            score -= KNIGHT_VALUE + Self::pst_value(square, Color::Black, &KNIGHT_PST_MG, &KNIGHT_PST_EG, phase);
         }
 
         let bishops = board.pieces(Piece::Bishop);
         for square in bishops & white {
-            score += BISHOP_VALUE + Self::pst_value(Piece::Bishop, square, Color::White, &BISHOP_PST_MG, &BISHOP_PST_EG, phase);
+            score += BISHOP_VALUE + Self::pst_value(square, Color::White, &BISHOP_PST_MG, &BISHOP_PST_EG, phase);
         }
         for square in bishops & black {
-            score -= BISHOP_VALUE + Self::pst_value(Piece::Bishop, square, Color::Black, &BISHOP_PST_MG, &BISHOP_PST_EG, phase);
+            score -= BISHOP_VALUE + Self::pst_value(square, Color::Black, &BISHOP_PST_MG, &BISHOP_PST_EG, phase);
         }
 
         let rooks = board.pieces(Piece::Rook);
         for square in rooks & white {
-            score += ROOK_VALUE + Self::pst_value(Piece::Rook, square, Color::White, &ROOK_PST_MG, &ROOK_PST_EG, phase);
+            score += ROOK_VALUE + Self::pst_value(square, Color::White, &ROOK_PST_MG, &ROOK_PST_EG, phase);
         }
         for square in rooks & black {
-            score -= ROOK_VALUE + Self::pst_value(Piece::Rook, square, Color::Black, &ROOK_PST_MG, &ROOK_PST_EG, phase);
+            score -= ROOK_VALUE + Self::pst_value(square, Color::Black, &ROOK_PST_MG, &ROOK_PST_EG, phase);
         }
 
         let queens = board.pieces(Piece::Queen);
         for square in queens & white {
-            score += QUEEN_VALUE + Self::pst_value(Piece::Queen, square, Color::White, &QUEEN_PST_MG, &QUEEN_PST_EG, phase);
+            score += QUEEN_VALUE + Self::pst_value(square, Color::White, &QUEEN_PST_MG, &QUEEN_PST_EG, phase);
         }
         for square in queens & black {
-            score -= QUEEN_VALUE + Self::pst_value(Piece::Queen, square, Color::Black, &QUEEN_PST_MG, &QUEEN_PST_EG, phase);
+            score -= QUEEN_VALUE + Self::pst_value(square, Color::Black, &QUEEN_PST_MG, &QUEEN_PST_EG, phase);
         }
 
         // Kings (no material value, just positional)
         let king_sq = (board.pieces(Piece::King) & white).to_square();
-        score += Self::pst_value(Piece::King, king_sq, Color::White, &KING_PST_MG, &KING_PST_EG, phase);
+        score += Self::pst_value(king_sq, Color::White, &KING_PST_MG, &KING_PST_EG, phase);
 
         let king_sq = (board.pieces(Piece::King) & black).to_square();
-        score -= Self::pst_value(Piece::King, king_sq, Color::Black, &KING_PST_MG, &KING_PST_EG, phase);
+        score -= Self::pst_value(king_sq, Color::Black, &KING_PST_MG, &KING_PST_EG, phase);
 
         score
     }
@@ -446,6 +459,169 @@ impl PstEval {
         // Scale by game phase (less important in endgame)
         score * (256 - phase) / 256
     }
+
+    /// Check if a color has mating material
+    #[inline]
+    fn has_mating_material(board: &Board, color: Color) -> bool {
+        let pieces = board.color_combined(color);
+        let queens = (board.pieces(Piece::Queen) & pieces).popcnt();
+        let rooks = (board.pieces(Piece::Rook) & pieces).popcnt();
+        let minors = ((board.pieces(Piece::Knight) | board.pieces(Piece::Bishop)) & pieces).popcnt();
+        let pawns = (board.pieces(Piece::Pawn) & pieces).popcnt();
+
+        queens > 0 || rooks > 0 || minors >= 2 || pawns > 0
+    }
+
+    /// Check if a color has defensive material (anything beyond a bare King)
+    #[inline]
+    fn has_defensive_material(board: &Board, color: Color) -> bool {
+        let pieces = board.color_combined(color);
+        let queens = (board.pieces(Piece::Queen) & pieces).popcnt();
+        let rooks = (board.pieces(Piece::Rook) & pieces).popcnt();
+        let minors = ((board.pieces(Piece::Knight) | board.pieces(Piece::Bishop)) & pieces).popcnt();
+        let pawns = (board.pieces(Piece::Pawn) & pieces).popcnt();
+
+        queens > 0 || rooks > 0 || minors > 0 || pawns > 0
+    }
+
+    /// Calculate Manhattan distance between two squares
+    #[inline]
+    fn manhattan_distance(sq1: Square, sq2: Square) -> i16 {
+        let file1 = sq1.get_file().to_index() as i16;
+        let rank1 = sq1.get_rank().to_index() as i16;
+        let file2 = sq2.get_file().to_index() as i16;
+        let rank2 = sq2.get_rank().to_index() as i16;
+
+        (file1 - file2).abs() + (rank1 - rank2).abs()
+    }
+
+    /// Calculate distance of a square to the nearest edge
+    #[inline]
+    fn edge_distance(sq: Square) -> i16 {
+        let file = sq.get_file().to_index() as i16;
+        let rank = sq.get_rank().to_index() as i16;
+
+        let file_dist = file.min(7 - file);
+        let rank_dist = rank.min(7 - rank);
+
+        file_dist.min(rank_dist)
+    }
+
+    /// Analyze if either side is in a winning mating endgame
+    #[inline]
+    fn analyze_endgame(board: &Board) -> EndgameContext {
+        EndgameContext {
+            white_winning: Self::has_mating_material(board, Color::White)
+                           && !Self::has_defensive_material(board, Color::Black),
+            black_winning: Self::has_mating_material(board, Color::Black)
+                           && !Self::has_defensive_material(board, Color::White),
+        }
+    }
+
+    /// Evaluate King proximity in endgames with mating material
+    fn evaluate_king_proximity(board: &Board, phase: i16, context: &EndgameContext) -> i16 {
+        // Only relevant in late endgame
+        if phase < ENDGAME_ACTIVATION_PHASE {
+            return 0;
+        }
+
+        let mut score = 0;
+
+        if context.white_winning {
+            // White is trying to mate Black
+            let white_king = (board.pieces(Piece::King) & board.color_combined(Color::White)).to_square();
+            let black_king = (board.pieces(Piece::King) & board.color_combined(Color::Black)).to_square();
+
+            let distance = Self::manhattan_distance(white_king, black_king);
+
+            // Bonus for Kings being close (max 70cp at distance 0)
+            score += (7 - distance.min(7)) * KING_PROXIMITY_BONUS_PER_SQUARE;
+        }
+
+        if context.black_winning {
+            // Black is trying to mate White
+            let white_king = (board.pieces(Piece::King) & board.color_combined(Color::White)).to_square();
+            let black_king = (board.pieces(Piece::King) & board.color_combined(Color::Black)).to_square();
+
+            let distance = Self::manhattan_distance(white_king, black_king);
+
+            // Same logic for black
+            score -= (7 - distance.min(7)) * KING_PROXIMITY_BONUS_PER_SQUARE;
+        }
+
+        score
+    }
+
+    /// Evaluate enemy King restriction to edges in mating endgames
+    fn evaluate_king_edge_restriction(board: &Board, phase: i16, context: &EndgameContext) -> i16 {
+        // Only relevant in late endgame
+        if phase < ENDGAME_ACTIVATION_PHASE {
+            return 0;
+        }
+
+        let mut score = 0;
+
+        if context.white_winning {
+            let black_king = (board.pieces(Piece::King) & board.color_combined(Color::Black)).to_square();
+            let edge_dist = Self::edge_distance(black_king);
+
+            // Big bonus for enemy King near edges (90cp when on edge)
+            score += (3 - edge_dist.min(3)) * EDGE_RESTRICTION_BONUS_PER_SQUARE;
+        }
+
+        if context.black_winning {
+            let white_king = (board.pieces(Piece::King) & board.color_combined(Color::White)).to_square();
+            let edge_dist = Self::edge_distance(white_king);
+
+            score -= (3 - edge_dist.min(3)) * EDGE_RESTRICTION_BONUS_PER_SQUARE;
+        }
+
+        score
+    }
+
+    /// Estimate mate distance and give bonus for positions closer to mate
+    fn evaluate_mate_progress(board: &Board, phase: i16, context: &EndgameContext) -> i16 {
+        // Only in pure endgames
+        if phase < PURE_ENDGAME_PHASE {
+            return 0;
+        }
+
+        let mut score = 0;
+
+        // If winning side, add bonus based on restricting King mobility
+        if context.white_winning {
+            // Count mobility of black King (fewer moves = closer to mate)
+            let black_king = (board.pieces(Piece::King) & board.color_combined(Color::Black)).to_square();
+            let king_moves = chess::get_king_moves(black_king);
+
+            // Filter out squares occupied by black pieces or attacked by white
+            let black = board.color_combined(Color::Black);
+            let white = board.color_combined(Color::White);
+
+            // Simple mobility check: exclude squares with black pieces
+            // (A full attack detection would be more accurate but slower)
+            let legal_king_squares = king_moves & !black & !white;
+            let legal_king_moves = legal_king_squares.popcnt() as i16;
+
+            // Bonus for restricting King mobility (5cp per restricted square)
+            score += (8 - legal_king_moves) * MOBILITY_RESTRICTION_BONUS_PER_SQUARE;
+        }
+
+        if context.black_winning {
+            let white_king = (board.pieces(Piece::King) & board.color_combined(Color::White)).to_square();
+            let king_moves = chess::get_king_moves(white_king);
+
+            let black = board.color_combined(Color::Black);
+            let white = board.color_combined(Color::White);
+
+            let legal_king_squares = king_moves & !black & !white;
+            let legal_king_moves = legal_king_squares.popcnt() as i16;
+
+            score -= (8 - legal_king_moves) * MOBILITY_RESTRICTION_BONUS_PER_SQUARE;
+        }
+
+        score
+    }
 }
 
 impl EvaluateEngine for PstEval {
@@ -479,6 +655,12 @@ impl EvaluateEngine for PstEval {
 
         // King safety
         score += Self::evaluate_king_safety(&board, phase);
+
+        // Endgame-specific evaluation (compute context once, use for all three functions)
+        let endgame_context = Self::analyze_endgame(&board);
+        score += Self::evaluate_king_proximity(&board, phase, &endgame_context);
+        score += Self::evaluate_king_edge_restriction(&board, phase, &endgame_context);
+        score += Self::evaluate_mate_progress(&board, phase, &endgame_context);
 
         // Return from side to move perspective
         if board.side_to_move() == Color::White {

@@ -7,7 +7,7 @@ use std::collections::HashMap;
 pub struct AnyMove;
 
 impl<T: EvaluateEngine> SearchEngine<T> for AnyMove {
-    fn next_move(&mut self, state: GameState, _time_info: &Option<TimeInfo>) -> Option<ChessMove> {
+    fn next_move(&mut self, state: GameState, _time_info: TimeInfo) -> Option<ChessMove> {
         MoveGen::new_legal(&state.last_board()).next()
     }
 
@@ -25,7 +25,7 @@ pub trait SearchEngine<T: EvaluateEngine> {
     /// Finds the next move to be played given a GameState and  optional time-control information.
     /// Returns an Option because it can technically fail to find a reasonable move.
     /// Default implementation returns the first available legal move
-    fn next_move(&mut self, state: GameState, time_info: &Option<TimeInfo>) -> Option<ChessMove>;
+    fn next_move(&mut self, state: GameState, time_info: TimeInfo) -> Option<ChessMove>;
 
     /// Clear search state (killer moves, history, etc.) when setting a new position
     fn clear_search_state(&mut self);
@@ -125,7 +125,7 @@ impl Default for GameState {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Default, Clone)]
 pub struct TimeInfo {
     pub move_time: Option<Duration>,
     pub white_time: Option<Duration>,

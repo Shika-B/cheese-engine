@@ -46,7 +46,6 @@ pub fn uci_loop<E: EvaluateEngine, S: SearchEngine<E>>(engine: &mut S) -> () {
                     error!("Position command with neither FEN nor startpos!");
                 }
 
-                // Apply moves regardless of whether we started from FEN or startpos
                 for mv in moves {
                     let chess_mv = from_uci_move(mv);
                     game_state.make_move(chess_mv);
@@ -59,36 +58,36 @@ pub fn uci_loop<E: EvaluateEngine, S: SearchEngine<E>>(engine: &mut S) -> () {
                 // TODO: Implement search control parsing ?
                 let time_control = if let Some(tc) = time_control {
                     match tc {
-                        UciTimeControl::Infinite => None,
+                        UciTimeControl::Infinite => TimeInfo::default(),
                         UciTimeControl::TimeLeft {
                             white_time,
                             black_time,
                             white_increment,
                             black_increment,
                             moves_to_go,
-                        } => Some(TimeInfo {
+                        } => TimeInfo {
                             white_time,
                             black_time,
                             white_increment,
                             black_increment,
                             moves_to_go,
                             move_time: None,
-                        }),
-                        UciTimeControl::MoveTime(move_time) => Some(TimeInfo {
+                        },
+                        UciTimeControl::MoveTime(move_time) => TimeInfo {
                             move_time: Some(move_time),
                             white_time: None,
                             black_time: None,
                             white_increment: None,
                             black_increment: None,
                             moves_to_go: None,
-                        }),
-                        UciTimeControl::Ponder => None,
+                        },
+                        UciTimeControl::Ponder => TimeInfo::default(),
                     }
                 } else {
-                    None
+                    TimeInfo::default()
                 };
 
-                let best_move = engine.next_move(game_state.clone(), &time_control);
+                let best_move = engine.next_move(game_state.clone(), time_control);
                 match best_move {
                     Some(mv) => {
                         let uci_move = into_uci_move(mv);

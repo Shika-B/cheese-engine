@@ -1,8 +1,12 @@
 mod mv_iter;
 
-use std::{i16, time::Instant};
+use std::{
+    i16,
+    time::{Duration, Instant},
+};
 
 use chess::{BoardStatus, ChessMove, MoveGen};
+use chrono::{TimeDelta, Utc};
 
 use crate::{
     engine::{EvaluateEngine, GameState, SearchEngine, TimeInfo},
@@ -13,8 +17,13 @@ const TRANSPOTION_TABLE_SIZE: usize = 16_777_216; // 16_777_216 = 2^24
 
 const MATE_THRESHOLD: i16 = 29_000;
 
-const MAX_DEPTH: u16 = 4;
+const MAX_DEPTH: u16 = 8;
 const MAX_PLY: usize = 128;
+const REPETITION_PENALTY: i16 = 50;
+
+// Endgame quiescence constants
+const SIMPLE_ENDGAME_PIECE_COUNT: u32 = 4;
+const ENDGAME_QSEARCH_DEPTH: usize = 8;
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub enum ResultKind {
@@ -51,13 +60,10 @@ pub struct Negamax {
 }
 
 impl<E: EvaluateEngine> SearchEngine<E> for Negamax {
-    fn next_move(
-        &mut self,
-        mut state: GameState,
-        _time_info: &Option<TimeInfo>,
-    ) -> Option<ChessMove> {
+    fn next_move(&mut self, mut state: GameState, _time_info: TimeInfo) -> Option<ChessMove> {
         self.nodes_explored = 0;
-        let start = Instant::now();
+        let start = Utc::now();
+        let mut elapsed = TimeDelta::zero();
 
         // Clear killer moves for new search
         for ply in 0..MAX_PLY {
@@ -83,8 +89,9 @@ impl<E: EvaluateEngine> SearchEngine<E> for Negamax {
                 best_move = Some(mv);
             }
         }
-
+        let mut last_depth = 0;
         for curr_depth in start_depth..=MAX_DEPTH {
+            last_depth = curr_depth;
             let mut window = 32;
             let mut alpha_orig = last_score - window;
             let mut beta = last_score + window;
@@ -131,16 +138,17 @@ impl<E: EvaluateEngine> SearchEngine<E> for Negamax {
                 }
                 window *= 2;
             }
+            elapsed = (Utc::now() - start);
         }
 
-        let elapsed = Instant::now() - start;
         log::info!(
-            "Nodes explored: {} in {}ms. {:.0} NPS",
+            "Nodes explored: {} in {}ms. {:.0} NPS up to depth {}",
             self.nodes_explored,
-            elapsed.as_millis(),
-            (self.nodes_explored as f64 / elapsed.as_secs_f64()).round()
+            elapsed.num_milliseconds(),
+            (self.nodes_explored as f64 / elapsed.as_seconds_f64()).round(),
+            last_depth
         );
-        log::info!("Best score: {}", last_score);
+        log::info!("Best move: {:?}, Best score: {}", best_move.map(|x| x.to_string()), last_score);
 
         best_move
     }
@@ -322,6 +330,10 @@ impl Negamax {
 
         let board = state.last_board();
 
+        // Detect simple mating endgames
+        let total_pieces = board.combined().popcnt();
+        let is_simple_endgame = total_pieces <= SIMPLE_ENDGAME_PIECE_COUNT;
+
         // Generate captures
         let mut captures: Vec<ChessMove> = MoveGen::new_legal(&board)
             .filter(|mv| board.piece_on(mv.get_dest()).is_some())
@@ -333,6 +345,31 @@ impl Negamax {
         // Sort by MVV-LVV descending
         captures.sort_unstable_by_key(|&mv| -self.mvv_lvv_score(mv, &board));
 
+        // In simple endgames, also consider checks and King moves
+        let mut extended_moves = Vec::new();
+        if is_simple_endgame && ply < ENDGAME_QSEARCH_DEPTH {
+            for mv in MoveGen::new_legal(&board) {
+                // Skip captures (already in captures list)
+                if board.piece_on(mv.get_dest()).is_some() {
+                    continue;
+                }
+
+                // Include checks
+                let new_board = board.make_move_new(mv);
+                if new_board.checkers().popcnt() > 0 {
+                    extended_moves.push(mv);
+                    continue;
+                }
+
+                // Include King moves
+                let piece = board.piece_on(mv.get_source());
+                if piece == Some(chess::Piece::King) {
+                    extended_moves.push(mv);
+                }
+            }
+        }
+
+        // First try captures
         for mv in captures {
             // Delta pruning: if even best-case capture can't raise alpha, skip
             let optimistic_score = stand_pat + self.mvv_lvv_score(mv, &board) + 200;
@@ -340,6 +377,24 @@ impl Negamax {
                 continue;
             }
 
+            let repetition_count = state.make_move(mv);
+            let score = if repetition_count >= 3 {
+                0
+            } else {
+                -self.quiescence::<E>(state, -beta, -alpha, ply + 1)
+            };
+            state.undo_last_move();
+
+            if score >= beta {
+                return beta;
+            }
+            if score > alpha {
+                alpha = score;
+            }
+        }
+
+        // Then try extended moves in endgame
+        for mv in extended_moves {
             let repetition_count = state.make_move(mv);
             let score = if repetition_count >= 3 {
                 0
@@ -367,7 +422,7 @@ impl Negamax {
         let victim = board.piece_on(mv.get_dest());
         let attacker = board.piece_on(mv.get_source());
 
-        if let Some(victim_piece) = victim {
+        let mut score = if let Some(victim_piece) = victim {
             let victim_value = PIECE_VALUES[victim_piece.to_index()];
             let attacker_value = if let Some(attacker_piece) = attacker {
                 PIECE_VALUES[attacker_piece.to_index()]
@@ -375,9 +430,18 @@ impl Negamax {
                 0
             };
             // Victim value * 16 ensures victims sorted first, attacker breaks ties
-            return victim_value * 16 - attacker_value;
+            victim_value * 16 - attacker_value
+        } else {
+            0
+        };
+
+        // Add promotion bonus (promotion piece value - pawn value)
+        if let Some(promotion) = mv.get_promotion() {
+            let promotion_value = PIECE_VALUES[promotion.to_index()];
+            score += promotion_value - PIECE_VALUES[0]; // promotion_value - PAWN_VALUE
         }
-        0
+
+        score
     }
 
     #[inline(always)]

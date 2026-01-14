@@ -67,9 +67,6 @@ def run_game(
         raise
     except FileNotFoundError:
         print("Error: cutechess-cli not found. Please install it first.", file=sys.stderr)
-        print("Ubuntu/Debian: sudo apt install cutechess-cli", file=sys.stderr)
-        print("Arch: sudo pacman -S cutechess", file=sys.stderr)
-        print("Or build from source: https://github.com/cutechess/cutechess", file=sys.stderr)
         sys.exit(1)
     finally:
         # Clean up temp file
@@ -124,7 +121,6 @@ def main():
     args = parser.parse_args()
 
     # Load FENs
-    
     if args.fens:
         with open(args.fens, 'r') as f:
             fens = [line.strip() for line in f if line.strip() and not line.startswith('#')]

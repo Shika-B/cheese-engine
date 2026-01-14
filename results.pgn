@@ -6,9 +6,9 @@
 [Black "Engine2"]
 [Result "1-0"]
 [FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"]
-[GameDuration "00:00:21"]
-[GameEndTime "2026-01-14T14:48:37.603 CET"]
-[GameStartTime "2026-01-14T14:48:16.039 CET"]
+[GameDuration "00:00:20"]
+[GameEndTime "2026-01-14T17:33:36.619 CET"]
+[GameStartTime "2026-01-14T17:33:16.474 CET"]
 [PlyCount "207"]
 [SetUp "1"]
 [TimeControl "5/move"]
@@ -37,14 +37,13 @@ Ka7 104. Ra2# {White mates} 1-0
 [Round "2"]
 [White "Engine2"]
 [Black "Engine1"]
-[Result "*"]
+[Result "1-0"]
 [FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"]
-[GameDuration "00:00:22"]
-[GameEndTime "2026-01-14T14:49:00.097 CET"]
-[GameStartTime "2026-01-14T14:48:37.669 CET"]
-[PlyCount "196"]
+[GameDuration "00:00:20"]
+[GameEndTime "2026-01-14T17:33:57.404 CET"]
+[GameStartTime "2026-01-14T17:33:36.686 CET"]
+[PlyCount "207"]
 [SetUp "1"]
-[Termination "unterminated"]
 [TimeControl "5/move"]
 
 1. Nc3 Nf6 2. Nf3 Nc6 3. e3 e6 4. Bb5 Bd6 5. Bxc6 dxc6 6. Ng5 Be5 7. O-O O-O
@@ -62,5 +61,359 @@ Bf3 72. Kg5 Be2 73. Bg3 Bf3 74. Kxh5 Kc6 75. Re1 Kd7 76. Kg6 Bc6 77. Kf6 Kd8
 78. Re7 Bd7 79. Rf7 a4 80. bxa4 Kc8 81. Bf4 b3 82. Be5 b2 83. Bxb2 Bxa4 84. Be5
 Bd7 85. Rg7 c6 86. d4 b5 87. Rg8+ Kb7 88. Rb8+ Ka6 89. Rd8 bxc4 90. Rxd7 c3
 91. Rg7 c2 92. Bf4 Kb5 93. Rxg4 Kb4 94. Ke5 Kc4 95. Ke4 Kc3 96. Rg2 Kb3 97. Kd3
-c1=Q 98. Bxc1 Kb4 {No result} *
+c1=Q 98. Bxc1 Kb4 99. Rb2+ Ka5 100. Kc4 Ka6 101. Kc5 Ka7 102. Kxc6 Ka8 103. Bf4
+Ka7 104. Ra2# {White mates} 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "1"]
+[White "Engine1"]
+[Black "Engine2"]
+[Result "1-0"]
+[FEN "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 0 1"]
+[GameDuration "00:00:24"]
+[GameEndTime "2026-01-14T17:34:26.930 CET"]
+[GameStartTime "2026-01-14T17:34:02.846 CET"]
+[PlyCount "208"]
+[SetUp "1"]
+[TimeControl "5/move"]
+
+1... Bb4 2. O-O Nh6 3. Bb5 Qf6 4. Nc3 Ne7 5. Bd3 O-O 6. Nb5 c6 7. Nc3 Ng4 8. Rb1
+Ng6 9. h3 Nh6 10. Ne2 Bd6 11. Bc4 Nh4 12. Nxh4 Qxh4 13. d4 Re8 14. dxe5 Bxe5
+15. Bd3 Ng4 16. Bf4 Bxf4 17. Nxf4 Ne5 18. Qd2 Nxd3 19. cxd3 Re7 20. Rbc1 Qf6
+21. Rc4 d6 22. Rfc1 Be6 23. Nxe6 Qxe6 24. Qa5 Qf6 25. R1c2 Qf4 26. Qc3 Rae8
+27. Ra4 Ra8 28. Qa3 Rae8 29. Rxa7 Qe5 30. Ra4 Rb8 31. Rac4 Rd8 32. Qa7 Rde8
+33. R4c3 d5 34. Re2 dxe4 35. Rxe4 Qc7 36. Rxe7 Qxe7 37. Rc2 Qd6 38. Rc1 Qf4
+39. Rb1 Qb4 40. b3 Kf8 41. Rc1 Kg8 42. Rb1 Kf8 43. Rc1 Kg8 44. Rd1 Kf8 45. Kf1
+Qe7 46. Ra1 Qe2+ 47. Kg1 Qe5 48. Rc1 Qe7 49. Qa5 Qd6 50. Qf5 Kg8 51. Qf3 Qe5
+52. Rc2 Re7 53. Qg4 Qa1+ 54. Kh2 Qe5+ 55. Qg3 Kf8 56. Qxe5 Rxe5 57. Kg3 Ke7
+58. Kf3 Kd6 59. Re2 Rxe2 60. Kxe2 Kc5 61. Kd1 Kb4 62. Kc2 Kc5 63. Kc3 Kd5 64. d4
+Ke6 65. Kd2 Kd6 66. Kd3 Ke6 67. Kc3 Kf5 68. Kc4 Ke4 69. Kc5 Kd3 70. Kb6 Kxd4
+71. Kxb7 Kd5 72. Kb6 Kd6 73. Kb7 Kd7 74. Kb8 Kd6 75. Kc8 Ke6 76. Kc7 Kd5 77. Kd7
+f6 78. Ke7 Ke5 79. Kf7 g5 80. Kg7 h5 81. Kg6 h4 82. Kf7 Kf5 83. Ke7 Ke5 84. Kd7
+Kd5 85. Ke7 Ke5 86. a4 f5 87. a5 g4 88. a6 gxh3 89. gxh3 c5 90. a7 c4 91. bxc4
+Kd4 92. a8=Q Kxc4 93. Qd8 Kc5 94. f4 Kb4 95. Ke6 Kc4 96. Qxh4 Kd3 97. Qf2 Kc4
+98. Qe3 Kb5 99. Qb3+ Kc5 100. Ke5 Kc6 101. Qb4 Kc7 102. Qb5 Kd8 103. Qb7 Ke8
+104. Ke6 Kf8 105. Qf7# {White mates} 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "2"]
+[White "Engine2"]
+[Black "Engine1"]
+[Result "1-0"]
+[FEN "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 0 1"]
+[GameDuration "00:00:24"]
+[GameEndTime "2026-01-14T17:34:51.487 CET"]
+[GameStartTime "2026-01-14T17:34:26.999 CET"]
+[PlyCount "208"]
+[SetUp "1"]
+[TimeControl "5/move"]
+
+1... Bb4 2. O-O Nh6 3. Bb5 Qf6 4. Nc3 Ne7 5. Bd3 O-O 6. Nb5 c6 7. Nc3 Ng4 8. Rb1
+Ng6 9. h3 Nh6 10. Ne2 Bd6 11. Bc4 Nh4 12. Nxh4 Qxh4 13. d4 Re8 14. dxe5 Bxe5
+15. Bd3 Ng4 16. Bf4 Bxf4 17. Nxf4 Ne5 18. Qd2 Nxd3 19. cxd3 Re7 20. Rbc1 Qf6
+21. Rc4 d6 22. Rfc1 Be6 23. Nxe6 Qxe6 24. Qa5 Qf6 25. R1c2 Qf4 26. Qc3 Rae8
+27. Ra4 Ra8 28. Qa3 Rae8 29. Rxa7 Qe5 30. Ra4 Rb8 31. Rac4 Rd8 32. Qa7 Rde8
+33. R4c3 d5 34. Re2 dxe4 35. Rxe4 Qc7 36. Rxe7 Qxe7 37. Rc2 Qd6 38. Rc1 Qf4
+39. Rb1 Qb4 40. b3 Kf8 41. Rc1 Kg8 42. Rb1 Kf8 43. Rc1 Kg8 44. Rd1 Kf8 45. Kf1
+Qe7 46. Ra1 Qe2+ 47. Kg1 Qe5 48. Rc1 Qe7 49. Qa5 Qd6 50. Qf5 Kg8 51. Qf3 Qe5
+52. Rc2 Re7 53. Qg4 Qa1+ 54. Kh2 Qe5+ 55. Qg3 Kf8 56. Qxe5 Rxe5 57. Kg3 Ke7
+58. Kf3 Kd6 59. Re2 Rxe2 60. Kxe2 Kc5 61. Kd1 Kb4 62. Kc2 Kc5 63. Kc3 Kd5 64. d4
+Ke6 65. Kd2 Kd6 66. Kd3 Ke6 67. Kc3 Kf5 68. Kc4 Ke4 69. Kc5 Kd3 70. Kb6 Kxd4
+71. Kxb7 Kd5 72. Kb6 Kd6 73. Kb7 Kd7 74. Kb8 Kd6 75. Kc8 Ke6 76. Kc7 Kd5 77. Kd7
+f6 78. Ke7 Ke5 79. Kf7 g5 80. Kg7 h5 81. Kg6 h4 82. Kf7 Kf5 83. Ke7 Ke5 84. Kd7
+Kd5 85. Ke7 Ke5 86. a4 f5 87. a5 g4 88. a6 gxh3 89. gxh3 c5 90. a7 c4 91. bxc4
+Kd4 92. a8=Q Kxc4 93. Qd8 Kc5 94. f4 Kb4 95. Ke6 Kc4 96. Qxh4 Kd3 97. Qf2 Kc4
+98. Qe3 Kb5 99. Qb3+ Kc5 100. Ke5 Kc6 101. Qb4 Kc7 102. Qb5 Kd8 103. Qb7 Ke8
+104. Ke6 Kf8 105. Qf7# {White mates} 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "1"]
+[White "Engine1"]
+[Black "Engine2"]
+[Result "1-0"]
+[FEN "rnbqkb1r/pp1ppppp/5n2/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 1"]
+[GameDuration "00:00:33"]
+[GameEndTime "2026-01-14T17:35:30.905 CET"]
+[GameStartTime "2026-01-14T17:34:56.948 CET"]
+[PlyCount "103"]
+[SetUp "1"]
+[Termination "stalled connection"]
+[TimeControl "5/move"]
+
+1. Nc3 Nc6 2. Bc4 Rb8 3. O-O Qc7 4. Nb5 Qa5 5. d3 d6 6. Bd2 Qb6 7. Bc3 Bg4 8. h3
+Bh5 9. g4 Bg6 10. Nh4 a6 11. Na3 Nxe4 12. dxe4 Bxe4 13. Re1 d5 14. Bxd5 Bxd5
+15. Qxd5 Rd8 16. Nc4 Rxd5 17. Nxb6 Rd8 18. Nf5 Rg8 19. Kg2 g6 20. Ne3 Bh6
+21. Ned5 Kf8 22. Nxe7 Nxe7 23. Bf6 Rd2 24. Bxe7+ Kg7 25. g5 Bxg5 26. Bxg5 Rxc2
+27. Nd5 Rf8 28. Bf6+ Kh6 29. Bc3 Rd8 30. Ne3 Rxc3 31. bxc3 Kg5 32. Kf3 Kf6
+33. Ng4+ Kg5 34. Re7 Rd3+ 35. Ne3 Kf6 36. Rxb7 Rxc3 37. Rb3 Rxb3 38. axb3 Ke5
+39. Rxa6 h5 40. Ra7 Kf6 41. Ke4 Ke6 42. Ra6+ Kd7 43. Kd5 Ke7 44. Kxc5 Ke8
+45. Kd6 Kf8 46. Ra8+ Kg7 47. Ke7 f6 48. Ke6 f5 49. Ra7+ Kh6 50. h4 f4 51. Kf6
+fxe3 52. fxe3 {Black's connection stalls} 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "1"]
+[White "Engine1"]
+[Black "Engine2"]
+[Result "1/2-1/2"]
+[FEN "rnbqkb1r/ppp2ppp/4pn2/3p4/2PP4/2N2N2/PP2PPPP/R1BQKB1R b KQkq - 0 1"]
+[GameDuration "00:00:15"]
+[GameEndTime "2026-01-14T17:35:51.076 CET"]
+[GameStartTime "2026-01-14T17:35:36.042 CET"]
+[PlyCount "110"]
+[SetUp "1"]
+[TimeControl "5/move"]
+
+1... Nc6 2. cxd5 Nxd5 3. Bd2 Nf6 4. Bf4 Bb4 5. Bg5 O-O 6. Qd3 Be7 7. Rc1 Bd7
+8. Qc4 Rc8 9. Bf4 Bb4 10. Bg5 Be7 11. Rc2 Re8 12. Be3 Nb4 13. Rc1 Nbd5 14. Bd2
+Bb4 15. Ne5 Re7 16. Rc2 Ba5 17. Qb3 Nb6 18. Qa3 Bxc3 19. Bxc3 a6 20. Bb4 Re8
+21. Qf3 Ba4 22. Rd2 Qd5 23. Qxd5 Nbxd5 24. Ba3 Red8 25. f3 Ne3 26. b3 Bb5
+27. Bc5 b6 28. Be7 Rxd4 29. Rxd4 Nc2+ 30. Kd2 Nxd4 31. Bxf6 gxf6 32. Ng4 Kg7
+33. e3 Bxf1 34. Rxf1 Nf5 35. e4 Rd8+ 36. Ke2 Nd4+ 37. Ke3 f5 38. exf5 Nxf5+
+39. Ke4 Rd4+ 40. Ke5 Kg6 41. Rf2 Rd5+ 42. Ke4 f6 43. f4 Nh4 44. g3 f5+ 45. Ke3
+fxg4 46. gxh4 Kh5 47. Rc2 Rd7 48. Ke4 Re7 49. Ke5 Kg6 50. h5+ Kxh5 51. Kf6 Rd7
+52. Kxe6 Rd6+ 53. Ke5 Rd7 54. Ke6 Rd6+ 55. Ke5 Rd7
+56. Ke6 {Draw by 3-fold repetition} 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "2"]
+[White "Engine2"]
+[Black "Engine1"]
+[Result "1/2-1/2"]
+[FEN "rnbqkb1r/ppp2ppp/4pn2/3p4/2PP4/2N2N2/PP2PPPP/R1BQKB1R b KQkq - 0 1"]
+[GameDuration "00:00:14"]
+[GameEndTime "2026-01-14T17:36:05.842 CET"]
+[GameStartTime "2026-01-14T17:35:51.137 CET"]
+[PlyCount "110"]
+[SetUp "1"]
+[TimeControl "5/move"]
+
+1... Nc6 2. cxd5 Nxd5 3. Bd2 Nf6 4. Bf4 Bb4 5. Bg5 O-O 6. Qd3 Be7 7. Rc1 Bd7
+8. Qc4 Rc8 9. Bf4 Bb4 10. Bg5 Be7 11. Rc2 Re8 12. Be3 Nb4 13. Rc1 Nbd5 14. Bd2
+Bb4 15. Ne5 Re7 16. Rc2 Ba5 17. Qb3 Nb6 18. Qa3 Bxc3 19. Bxc3 a6 20. Bb4 Re8
+21. Qf3 Ba4 22. Rd2 Qd5 23. Qxd5 Nbxd5 24. Ba3 Red8 25. f3 Ne3 26. b3 Bb5
+27. Bc5 b6 28. Be7 Rxd4 29. Rxd4 Nc2+ 30. Kd2 Nxd4 31. Bxf6 gxf6 32. Ng4 Kg7
+33. e3 Bxf1 34. Rxf1 Nf5 35. e4 Rd8+ 36. Ke2 Nd4+ 37. Ke3 f5 38. exf5 Nxf5+
+39. Ke4 Rd4+ 40. Ke5 Kg6 41. Rf2 Rd5+ 42. Ke4 f6 43. f4 Nh4 44. g3 f5+ 45. Ke3
+fxg4 46. gxh4 Kh5 47. Rc2 Rd7 48. Ke4 Re7 49. Ke5 Kg6 50. h5+ Kxh5 51. Kf6 Rd7
+52. Kxe6 Rd6+ 53. Ke5 Rd7 54. Ke6 Rd6+ 55. Ke5 Rd7
+56. Ke6 {Draw by 3-fold repetition} 1/2-1/2
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "1"]
+[White "Engine1"]
+[Black "Engine2"]
+[Result "1-0"]
+[FEN "rnbqk2r/ppp1ppbp/3p1np1/8/2PPP3/2N2N2/PP2BPPP/R1BQK2R b KQkq - 0 1"]
+[GameDuration "00:00:14"]
+[GameEndTime "2026-01-14T17:36:25.430 CET"]
+[GameStartTime "2026-01-14T17:36:11.020 CET"]
+[PlyCount "136"]
+[SetUp "1"]
+[TimeControl "5/move"]
+
+1... O-O 2. O-O Nc6 3. d5 Nb8 4. e5 dxe5 5. Nxe5 Nh5 6. Nd3 Nd7 7. Bxh5 gxh5
+8. Qxh5 Bxc3 9. bxc3 Re8 10. Bh6 Nf8 11. Qe5 f6 12. Qg3+ Ng6 13. Bf4 c6 14. dxc6
+bxc6 15. Bc7 Qd7 16. Rab1 Qg4 17. Qxg4 Bxg4 18. Rbe1 Rac8 19. Bg3 Kf7 20. Nc5
+Rg8 21. Re3 Rg7 22. Rfe1 Rd8 23. Re4 Rd1 24. Bb8 a5 25. Bc7 Rxe1+ 26. Rxe1 Nf8
+27. Bxa5 Bh3 28. g3 Ng6 29. Bc7 Nh4 30. Re3 Nf5 31. Rd3 Bg4 32. f3 Bh5 33. Kf2
+Bg6 34. Rd8 Rg8 35. Rxg8 Kxg8 36. Ke2 Kf7 37. Nb7 Ke6 38. Nc5+ Kf7 39. Ne4 Nh6
+40. Ke3 Bxe4 41. Kxe4 Ke6 42. Kd4 Kd7 43. Bf4 Nf5+ 44. Kc5 Ng7 45. Kd4 Ne6+
+46. Ke4 Nxf4 47. Kxf4 Ke6 48. Ke4 Kd7 49. Kd3 Kd6 50. Kd4 Kd7 51. c5 Ke6 52. Ke4
+f5+ 53. Kd4 Kf6 54. a4 e5+ 55. Ke3 Kg5 56. a5 f4+ 57. gxf4+ exf4+ 58. Ke4 Kh4
+59. a6 Kh3 60. a7 Kxh2 61. Kxf4 h5 62. a8=Q h4 63. Qxc6 Kg2 64. Qg6+ Kf2
+65. Qc2+ Kg1 66. c6 Kf1 67. Qh2 Ke1 68. Ke3 h3 69. Qg1# {White mates} 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "2"]
+[White "Engine2"]
+[Black "Engine1"]
+[Result "1-0"]
+[FEN "rnbqk2r/ppp1ppbp/3p1np1/8/2PPP3/2N2N2/PP2BPPP/R1BQK2R b KQkq - 0 1"]
+[GameDuration "00:00:14"]
+[GameEndTime "2026-01-14T17:36:40.349 CET"]
+[GameStartTime "2026-01-14T17:36:25.493 CET"]
+[PlyCount "136"]
+[SetUp "1"]
+[TimeControl "5/move"]
+
+1... O-O 2. O-O Nc6 3. d5 Nb8 4. e5 dxe5 5. Nxe5 Nh5 6. Nd3 Nd7 7. Bxh5 gxh5
+8. Qxh5 Bxc3 9. bxc3 Re8 10. Bh6 Nf8 11. Qe5 f6 12. Qg3+ Ng6 13. Bf4 c6 14. dxc6
+bxc6 15. Bc7 Qd7 16. Rab1 Qg4 17. Qxg4 Bxg4 18. Rbe1 Rac8 19. Bg3 Kf7 20. Nc5
+Rg8 21. Re3 Rg7 22. Rfe1 Rd8 23. Re4 Rd1 24. Bb8 a5 25. Bc7 Rxe1+ 26. Rxe1 Nf8
+27. Bxa5 Bh3 28. g3 Ng6 29. Bc7 Nh4 30. Re3 Nf5 31. Rd3 Bg4 32. f3 Bh5 33. Kf2
+Bg6 34. Rd8 Rg8 35. Rxg8 Kxg8 36. Ke2 Kf7 37. Nb7 Ke6 38. Nc5+ Kf7 39. Ne4 Nh6
+40. Ke3 Bxe4 41. Kxe4 Ke6 42. Kd4 Kd7 43. Bf4 Nf5+ 44. Kc5 Ng7 45. Kd4 Ne6+
+46. Ke4 Nxf4 47. Kxf4 Ke6 48. Ke4 Kd7 49. Kd3 Kd6 50. Kd4 Kd7 51. c5 Ke6 52. Ke4
+f5+ 53. Kd4 Kf6 54. a4 e5+ 55. Ke3 Kg5 56. a5 f4+ 57. gxf4+ exf4+ 58. Ke4 Kh4
+59. a6 Kh3 60. a7 Kxh2 61. Kxf4 h5 62. a8=Q h4 63. Qxc6 Kg2 64. Qg6+ Kf2
+65. Qc2+ Kg1 66. c6 Kf1 67. Qh2 Ke1 68. Ke3 h3 69. Qg1# {White mates} 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "1"]
+[White "Engine1"]
+[Black "Engine2"]
+[Result "1-0"]
+[FEN "8/8/4k3/8/8/4K3/8/7R w - - 0 1"]
+[GameDuration "00:00:21"]
+[GameEndTime "2026-01-14T17:37:06.904 CET"]
+[GameStartTime "2026-01-14T17:36:45.802 CET"]
+[PlyCount "21"]
+[SetUp "1"]
+[Termination "stalled connection"]
+[TimeControl "5/move"]
+
+1. Ke4 Kd6 2. Rc1 Ke6 3. Rd1 Kf6 4. Rd6+ Ke7 5. Ke5 Kf7 6. Kf5 Ke7 7. Rd2 Kf7
+8. Rd7+ Kf8 9. Kf6 Kg8 10. Rb7 Kh8 11. Kg6 {Black's connection stalls} 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "1"]
+[White "Engine1"]
+[Black "Engine2"]
+[Result "1-0"]
+[FEN "8/8/8/3k4/3P4/3K4/8/8 w - - 0 1"]
+[GameDuration "00:00:21"]
+[GameEndTime "2026-01-14T17:37:33.896 CET"]
+[GameStartTime "2026-01-14T17:37:12.042 CET"]
+[PlyCount "25"]
+[SetUp "1"]
+[Termination "stalled connection"]
+[TimeControl "5/move"]
+
+1. Ke3 Kd6 2. Ke4 Kc6 3. Ke5 Kb5 4. d5 Kc5 5. d6 Kc6 6. Ke6 Kc5 7. d7 Kd4
+8. d8=Q+ Kc3 9. Qd1 Kc4 10. Kd6 Kc3 11. Kc5 Kb2 12. Kc4 Ka2
+13. Kc3 {Black's connection stalls} 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "1"]
+[White "Engine1"]
+[Black "Engine2"]
+[Result "1-0"]
+[FEN "8/8/8/4k3/8/4K3/8/3Q3r w - - 0 1"]
+[GameDuration "00:00:20"]
+[GameEndTime "2026-01-14T17:37:59.906 CET"]
+[GameStartTime "2026-01-14T17:37:39.015 CET"]
+[PlyCount "15"]
+[SetUp "1"]
+[Termination "stalled connection"]
+[TimeControl "5/move"]
+
+1. Qxh1 Kd6 2. Kd4 Ke6 3. Qf3 Kd7 4. Qe4 Kd6 5. Qd5+ Kc7 6. Kc5 Kb8 7. Qd7 Ka8
+8. Kc6 {Black's connection stalls} 1-0
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "1"]
+[White "Engine1"]
+[Black "Engine2"]
+[Result "1-0"]
+[FEN "r4rk1/ppp2ppp/2n2n2/2b1p3/2B1P1b1/2NP1N2/PPP2PPP/R1BQ1RK1 w - - 0 1"]
+[GameDuration "00:00:07"]
+[GameEndTime "2026-01-14T17:38:12.305 CET"]
+[GameStartTime "2026-01-14T17:38:05.018 CET"]
+[PlyCount "49"]
+[SetUp "1"]
+[TimeControl "5/move"]
+
+1. Nd5 Ne8 2. Ne3 Bxe3 3. Bxe3 Nd6 4. Bd5 Nb4 5. Bb3 Nc6 6. h3 Bxf3 7. Qxf3 Rae8
+8. c3 Na5 9. Bxa7 Nxb3 10. axb3 Re6 11. Bc5 Rd8 12. Ra7 Rb8 13. Rfa1 Rd8 14. Kh2
+Rb8 15. Bxd6 Rxd6 16. Rxb7 Rc8 17. Rxc7 Rf8 18. Rxf7 Rf6 19. Rxf6 gxf6 20. h4
+Kg7 21. Qg4+ Kh8 22. Ra7 Rg8 23. Qd7 Rxg2+ 24. Kxg2 Kg8 25. Qg7# {White mates}
+1-0
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "2"]
+[White "Engine2"]
+[Black "Engine1"]
+[Result "1-0"]
+[FEN "r4rk1/ppp2ppp/2n2n2/2b1p3/2B1P1b1/2NP1N2/PPP2PPP/R1BQ1RK1 w - - 0 1"]
+[GameDuration "00:00:08"]
+[GameEndTime "2026-01-14T17:38:20.384 CET"]
+[GameStartTime "2026-01-14T17:38:12.370 CET"]
+[PlyCount "49"]
+[SetUp "1"]
+[TimeControl "5/move"]
+
+1. Nd5 Ne8 2. Ne3 Bxe3 3. Bxe3 Nd6 4. Bd5 Nb4 5. Bb3 Nc6 6. h3 Bxf3 7. Qxf3 Rae8
+8. c3 Na5 9. Bxa7 Nxb3 10. axb3 Re6 11. Bc5 Rd8 12. Ra7 Rb8 13. Rfa1 Rd8 14. Kh2
+Rb8 15. Bxd6 Rxd6 16. Rxb7 Rc8 17. Rxc7 Rf8 18. Rxf7 Rf6 19. Rxf6 gxf6 20. h4
+Kg7 21. Qg4+ Kh8 22. Ra7 Rg8 23. Qd7 Rxg2+ 24. Kxg2 Kg8 25. Qg7# {White mates}
+1-0
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "1"]
+[White "Engine1"]
+[Black "Engine2"]
+[Result "0-1"]
+[FEN "r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/3P1N2/PPP2PPP/RNBQK2R w KQkq - 0 1"]
+[GameDuration "00:00:38"]
+[GameEndTime "2026-01-14T17:39:03.906 CET"]
+[GameStartTime "2026-01-14T17:38:25.875 CET"]
+[PlyCount "146"]
+[SetUp "1"]
+[Termination "stalled connection"]
+[TimeControl "5/move"]
+
+1. Bg5 O-O 2. O-O Be7 3. Nc3 Ne8 4. Be3 Nf6 5. Bg5 Ne8 6. Bd2 Nd6 7. Bb3 Qe8
+8. Nd5 Bd8 9. Ne3 Nb5 10. Nf5 Bf6 11. Bc4 Nbd4 12. N5xd4 exd4 13. Bd5 Ne7
+14. Bc4 Nc6 15. Bd5 Ne7 16. Bxf7+ Qxf7 17. e5 Nc6 18. exf6 Qxf6 19. Re1 d5
+20. Re2 Bg4 21. Qf1 Bxf3 22. gxf3 Qxf3 23. Rae1 Rf7 24. Qg2 Qf5 25. Qg5 Qxg5+
+26. Bxg5 Nb4 27. a3 Nc6 28. Kg2 Raf8 29. Bh4 Kh8 30. Bg3 Kg8 31. Kh3 Nb8 32. Re7
+Na6 33. Kg2 Rf5 34. R1e5 Rxe5 35. Bxe5 Rf7 36. Rxf7 Kxf7 37. Bxd4 b6 38. Kf3 Nc5
+39. Bxc5 bxc5 40. Ke3 Kf6 41. Kf4 Ke6 42. Kf3 Kf5 43. a4 d4 44. Kg3 Ke5 45. Kg4
+Kd5 46. Kf4 c4 47. dxc4+ Kxc4 48. Ke4 d3 49. cxd3+ Kb3 50. Kd4 Kxb2 51. Kc4 Kc2
+52. Kd4 h5 53. Ke3 Kc3 54. d4 h4 55. Kf3 Kxd4 56. Kg4 Ke4 57. a5 c5 58. Kxh4 Kf3
+59. Kg5 Kxf2 60. Kg6 Kg2 61. Kxg7 Kxh2 62. Kf6 c4 63. a6 c3 64. Ke5 c2 65. Kd5
+c1=Q 66. Kd4 Qc6 67. Ke5 Kg3 68. Kf5 Qxa6 69. Ke5 Qc6 70. Kf5 Qe8 71. Kf6 Kf4
+72. Kg7 Kf5 73. Kh7 Kf6 {White's connection stalls} 0-1
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "1"]
+[White "Engine1"]
+[Black "Engine2"]
+[Result "*"]
+[FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"]
+[SetUp "1"]
+[Termination "unterminated"]
+[TimeControl "5/move"]
+ *
+
+[Event "?"]
+[Site "?"]
+[Date "2026.01.14"]
+[Round "2"]
+[White "Engine2"]
+[Black "Engine1"]
+[Result "*"]
+[FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"]
+[SetUp "1"]
+[Termination "unterminated"]
+[TimeControl "5/move"]
+ *
 

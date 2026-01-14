@@ -1,0 +1,5 @@
+uci
+isready
+position fen 8/8/8/4k3/8/8/3Q4/4K3 w - - 0 1
+go movetime 3000
+quit
