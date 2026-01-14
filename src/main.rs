@@ -40,7 +40,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 message
             ))
         })
-        .level(log::LevelFilter::Debug)
+        .level(log::LevelFilter::Warn)
         .chain(std::io::stderr()) // log to console in STDERR
         .chain(fern::log_file(
             "/home/abdel/Documents/cheese-engine/logfile.txt",
