@@ -1,4 +1,5 @@
-use chess::{Board, BoardStatus, ChessMove, MoveGen};
+use chess::{Board, BoardStatus, ChessMove, MoveGen, Color};
+use ort::Error;
 use vampirc_uci::Duration;
 
 use std::collections::HashMap;
@@ -18,7 +19,7 @@ impl<T: EvaluateEngine> SearchEngine<T> for AnyMove {
 
 pub trait EvaluateEngine {
     /// Returns a quantized (integer-valued) evaluation of the position, from the side to move perspective
-    fn evaluate(state: &GameState) -> i16;
+    fn evaluate(&mut self, state: &GameState) -> Result<i16, Error>;
 }
 
 pub trait SearchEngine<T: EvaluateEngine> {
@@ -28,7 +29,7 @@ pub trait SearchEngine<T: EvaluateEngine> {
     fn next_move(&mut self, state: GameState, time_info: TimeInfo) -> Option<ChessMove>;
 
     /// Clear search state (killer moves, history, etc.) when setting a new position
-    fn clear_search_state(&mut self);
+    fn clear_search_state(&mut self) {}
 
     /// Used to keep searching moves on opponents time.
     /// Default implementation does nothing, and it may be left as is.
@@ -58,6 +59,10 @@ impl GameState {
         let mut s = Self::default();
         s.board = board;
         s
+    }
+
+    pub fn turn(&self) -> Color {
+        self.last_board().side_to_move()
     }
 
     #[inline(always)]

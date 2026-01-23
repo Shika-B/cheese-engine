@@ -7,6 +7,7 @@ use std::{
 
 use chess::{BoardStatus, ChessMove, MoveGen};
 use chrono::{TimeDelta, Utc};
+use ort::Error;
 
 use crate::{
     engine::{EvaluateEngine, GameState, SearchEngine, TimeInfo},
@@ -17,7 +18,7 @@ const TRANSPOTION_TABLE_SIZE: usize = 16_777_216; // 16_777_216 = 2^24
 
 const MATE_THRESHOLD: i16 = 29_000;
 
-const MAX_DEPTH: u16 = 6;
+const MAX_DEPTH: u16 = 4;
 const MAX_PLY: usize = 128;
 const REPETITION_PENALTY: i16 = 50;
 
@@ -48,7 +49,7 @@ pub struct SearchResult {
     best_move: Option<ChessMove>,
 }
 
-pub struct Negamax {
+pub struct Negamax<E : EvaluateEngine> {
     nodes_explored: usize,
     transposition_table: Vec<SearchResult>,
 
@@ -57,9 +58,13 @@ pub struct Negamax {
     counter_moves: [Option<ChessMove>; 64],
     history_table: [[i32; 64]; 64],
     history_move_count: u32,
+
+    evaluator : E
 }
 
-impl<E: EvaluateEngine> SearchEngine<E> for Negamax {
+
+
+impl<E: EvaluateEngine> SearchEngine<E> for Negamax<E> {
     fn next_move(&mut self, mut state: GameState, _time_info: TimeInfo) -> Option<ChessMove> {
         self.nodes_explored = 0;
         let start = Utc::now();
@@ -114,7 +119,7 @@ impl<E: EvaluateEngine> SearchEngine<E> for Negamax {
                     let score = if repetition_count >= 3 {
                         0
                     } else {
-                        -self.search_eval::<E>(&mut state, -beta, -alpha, curr_depth - 1, 1)
+                        -self.search_eval(&mut state, -beta, -alpha, curr_depth - 1, 1)
                     };
 
                     state.undo_last_move();
@@ -163,8 +168,8 @@ impl<E: EvaluateEngine> SearchEngine<E> for Negamax {
     }
 }
 
-impl Negamax {
-    pub fn new() -> Self {
+impl<E : EvaluateEngine> Negamax<E> {
+    pub fn new(evaluator : E) -> Self {
         Self {
             nodes_explored: 0,
             transposition_table: vec![SearchResult::default(); TRANSPOTION_TABLE_SIZE],
@@ -172,6 +177,7 @@ impl Negamax {
             counter_moves: [None; 64],
             history_table: [[0; 64]; 64],
             history_move_count: 0,
+            evaluator : evaluator
         }
     }
 
@@ -189,7 +195,7 @@ impl Negamax {
         let transpo_idx = (search_result.hash as usize) & (TRANSPOTION_TABLE_SIZE - 1);
         self.transposition_table[transpo_idx] = search_result;
     }
-    pub fn search_eval<E: EvaluateEngine>(
+    pub fn search_eval(
         &mut self,
         state: &mut GameState,
         mut alpha: i16,
@@ -225,12 +231,12 @@ impl Negamax {
         }
 
         if depth == 0 {
-            return self.quiescence::<E>(state, alpha, beta, ply);
+            return self.quiescence(state, alpha, beta, ply);
         }
 
         match board.status() {
             BoardStatus::Stalemate | BoardStatus::Checkmate => {
-                return E::evaluate(state);
+                return self.evaluator.evaluate(state).unwrap();
             }
             BoardStatus::Ongoing => (),
         }
@@ -260,15 +266,15 @@ impl Negamax {
                 0
             } else if move_count == 1 {
                 // First move: full window (PV node)
-                -self.search_eval::<E>(state, -beta, -alpha, depth - 1, ply + 1)
+                -self.search_eval(state, -beta, -alpha, depth - 1, ply + 1)
             } else {
                 // Null window search
                 let mut score =
-                    -self.search_eval::<E>(state, -alpha - 1, -alpha, depth - 1, ply + 1);
+                    -self.search_eval(state, -alpha - 1, -alpha, depth - 1, ply + 1);
 
                 // Re-search if it beat alpha
                 if score > alpha && score < beta {
-                    score = -self.search_eval::<E>(state, -beta, -alpha, depth - 1, ply + 1);
+                    score = -self.search_eval(state, -beta, -alpha, depth - 1, ply + 1);
                 }
                 score
             };
@@ -310,7 +316,7 @@ impl Negamax {
         best_score
     }
 
-    fn quiescence<E: EvaluateEngine>(
+    fn quiescence(
         &mut self,
         state: &mut GameState,
         mut alpha: i16,
@@ -319,7 +325,7 @@ impl Negamax {
     ) -> i16 {
         self.nodes_explored += 1;
 
-        let stand_pat = E::evaluate(state);
+        let stand_pat = self.evaluator.evaluate(state).unwrap();
 
         if stand_pat >= beta {
             return beta;
@@ -381,7 +387,7 @@ impl Negamax {
             let score = if repetition_count >= 3 {
                 0
             } else {
-                -self.quiescence::<E>(state, -beta, -alpha, ply + 1)
+                -self.quiescence(state, -beta, -alpha, ply + 1)
             };
             state.undo_last_move();
 
@@ -399,7 +405,7 @@ impl Negamax {
             let score = if repetition_count >= 3 {
                 0
             } else {
-                -self.quiescence::<E>(state, -beta, -alpha, ply + 1)
+                -self.quiescence(state, -beta, -alpha, ply + 1)
             };
             state.undo_last_move();
 

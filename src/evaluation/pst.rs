@@ -1,6 +1,7 @@
 // TODO: Make the code less repetitive.
 
 use chess::{Board, BoardStatus, Color, Piece, Square, BitBoard, File, EMPTY};
+use ort::Error;
 
 use crate::engine::{EvaluateEngine, GameState};
 
@@ -173,6 +174,9 @@ struct EndgameContext {
 pub struct PstEval;
 
 impl PstEval {
+    pub fn new() -> Self {
+        Self {}
+    }
     /// Calculate game phase (0 = opening, 256 = endgame)
     /// Based on remaining material
     #[inline]
@@ -625,16 +629,16 @@ impl PstEval {
 }
 
 impl EvaluateEngine for PstEval {
-    fn evaluate(state: &GameState) -> i16 {
+    fn evaluate(&mut self, state: &GameState) -> Result<i16, Error> {
         if state.is_draw() {
-            return 0;
+            return Ok(0);
         }
 
         let board = state.last_board();
         let status = board.status();
 
         if status == BoardStatus::Checkmate {
-            return -MATE_VALUE + state.ply() as i16;
+            return Ok(-MATE_VALUE + state.ply() as i16);
         }
 
         let phase = Self::game_phase(&board);
@@ -664,9 +668,9 @@ impl EvaluateEngine for PstEval {
 
         // Return from side to move perspective
         if board.side_to_move() == Color::White {
-            score
+            Ok(score)
         } else {
-            -score
+            Ok(-score)
         }
     }
 }

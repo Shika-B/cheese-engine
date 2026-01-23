@@ -145,7 +145,7 @@ pub fn play_match<E: EvaluateEngine>(
 ) -> Result<(GameResult, GameState, Pgn), String> {
     // Parse the FEN and create game state
     let board = Board::from_str(fen).map_err(|e| format!("Invalid FEN: {}", e))?;
-    let mut state = GameState::from_board(board);
+    let mut state: GameState = GameState::from_board(board);
 
     // Clear search state for both engines
     white_engine.clear_search_state();

@@ -1,6 +1,8 @@
-mod pst;
-
+mod nnue;
+pub use nnue::NnueEval;
+use ort::Error;
 pub use pst::PstEval;
+mod pst;
 
 use chess::{BoardStatus, Color, Piece};
 
@@ -18,16 +20,16 @@ pub const MATE_VALUE: i16 = 30_000;
 pub struct CountMaterial;
 
 impl EvaluateEngine for CountMaterial {
-    fn evaluate(state: &GameState) -> i16 {
+    fn evaluate(&mut self, state: &GameState) -> Result<i16, Error> {
         if state.is_draw() {
-            return 0;
+            return Ok(0);
         }
 
         let board = state.last_board();
         let status = board.status();
 
         if status == BoardStatus::Checkmate {
-            return -MATE_VALUE + state.ply() as i16;
+            return Ok(-MATE_VALUE + state.ply() as i16);
         }
 
         let mut score = 0;
@@ -48,9 +50,9 @@ impl EvaluateEngine for CountMaterial {
         score += QUEEN_VALUE * count(Piece::Queen);
 
         if board.side_to_move() == Color::White {
-            score
+            Ok(score)
         } else {
-            -score
+            Ok(-score)
         }
     }
 }

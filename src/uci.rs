@@ -27,7 +27,10 @@ pub fn uci_loop<E: EvaluateEngine, S: SearchEngine<E>>(engine: &mut S) -> () {
                 println!("{}", author);
                 println!("{}", UciMessage::UciOk);
             }
-            UciMessage::IsReady => println!("{}", UciMessage::ReadyOk),
+            UciMessage::IsReady => {
+                log::debug!("i'm ready");
+                println!("{}", UciMessage::ReadyOk)
+            }
 
             UciMessage::Position {
                 startpos,
