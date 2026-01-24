@@ -3,4 +3,4 @@
 logfile.txt
 /.claude
 /pyNNUE/models
-/pyNNUE/train.csv
+/pyNNUE/chessData

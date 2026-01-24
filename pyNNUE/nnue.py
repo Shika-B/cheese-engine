@@ -3,7 +3,7 @@ import chess
 import torch.nn.functional as F
 from torch import FloatTensor
 
-INPUT_SIZE = 768
+INPUT_SIZE = 2*6*64 + 4 + 16 + 1   # 2 players * 6 ^piece_types * 64 squares + 4 castling rights + 16 possible squares for en_passant + 1 who to play 
 HIDDEN_SIZE = 256
 EVAL_SCALE = 400
 QA = 255
@@ -14,10 +14,27 @@ def piece_index(piece_type, color, square):
 
 def fen_to_onehot(fen : str):
     b = chess.Board()
-    b.set_board_fen(fen)
-    board = np.zeros((768, ), dtype=int)
+    b.set_fen(fen)
+    board = np.zeros((INPUT_SIZE, ), dtype=int)     
+    
+    # position
     for square, piece in b.piece_map().items():
         board[piece_index(piece.piece_type, piece.color, square)] = 1
+    
+    # castling
+    board[768] = b.has_kingside_castling_rights(chess.WHITE)
+    board[769] = b.has_queenside_castling_rights(chess.WHITE)
+    board[770] = b.has_kingside_castling_rights(chess.BLACK)
+    board[771] = b.has_queenside_castling_rights(chess.BLACK)
+
+    # en passant
+    en_passant = b.ep_square
+    if not (en_passant is None): 
+        board[772 + ((en_passant - 16) if (16 <= en_passant <= 23) else (en_passant - 40 + 8))] = 1  # en passant squares are on row 3 or 6, so reduce the square interval from 0,63 to 0,17
+
+    # turn
+    board[788] = int(b.turn)
+
     return board
 
 def clamp(x):
