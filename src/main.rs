@@ -50,9 +50,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 
     log::info!("Starting UCI loop");
-    let eval = NnueEval::new().unwrap();
+    let eval = PstEval;
     let mut engine = Negamax::new(eval);
-    uci_loop::<NnueEval, _>(&mut engine);
+    uci_loop::<PstEval, _>(&mut engine);
     
     Ok(())
 }
